@@ -1,0 +1,94 @@
+package com.hakcay.inventorymanagement.expense;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Service class for managing Expense operations.
+ * Provides business logic for adding, removing, and retrieving expenses.
+ */
+public class ExpenseService {
+    private ExpenseRepository repository;
+    private List<Expense> expenses;
+
+    /**
+     * Constructor that initializes the repository and loads existing expenses.
+     */
+    public ExpenseService() {
+        this.repository = new ExpenseRepository();
+        this.expenses = new ArrayList<>(repository.loadAll());
+    }
+
+    /**
+     * Constructor that accepts a repository (for testing purposes).
+     *
+     * @param repository the expense repository to use
+     */
+    public ExpenseService(ExpenseRepository repository) {
+        this.repository = repository;
+        this.expenses = new ArrayList<>(repository.loadAll());
+    }
+
+    /**
+     * Adds a new expense to the logging system.
+     * Enforces unique id constraint - throws IllegalArgumentException if id already exists.
+     *
+     * @param expense the expense to add
+     * @throws IllegalArgumentException if expense id already exists
+     */
+    public void addExpense(Expense expense) {
+        if (expense == null) {
+            throw new IllegalArgumentException("Expense cannot be null");
+        }
+
+        // Check for duplicate id
+        for (Expense existing : expenses) {
+            if (existing.getId() == expense.getId()) {
+                throw new IllegalArgumentException("Expense with id " + expense.getId() + " already exists");
+            }
+        }
+
+        expenses.add(expense);
+        repository.saveAll(expenses);
+    }
+
+    /**
+     * Removes an expense from the logging system by id.
+     *
+     * @param id the id of the expense to remove
+     * @return true if expense was removed, false if not found
+     */
+    public boolean removeExpenseById(int id) {
+        boolean removed = expenses.removeIf(expense -> expense.getId() == id);
+        if (removed) {
+            repository.saveAll(expenses);
+        }
+        return removed;
+    }
+
+    /**
+     * Gets all expenses in the logging system.
+     *
+     * @return list of all expenses
+     */
+    public List<Expense> getAllExpenses() {
+        return new ArrayList<>(expenses);
+    }
+
+    /**
+     * Calculates the total expense amount for a specific project.
+     *
+     * @param projectId the project id
+     * @return the total expense amount for the project
+     */
+    public double getTotalExpenseForProject(int projectId) {
+        double total = 0.0;
+        for (Expense expense : expenses) {
+            if (expense.getProjectId() == projectId) {
+                total += expense.getAmount();
+            }
+        }
+        return total;
+    }
+}
+
