@@ -29,4 +29,12 @@ import ch.qos.logback.classic.Logger;
  */
 public class InventorymanagementApp {
   
+  /**
+   * @brief Main method - entry point of the application.
+   * @param args Command line arguments
+   */
+  public static void main(String[] args) {
+    // Placeholder for main application logic
+    System.out.println("Inventory Management App");
+  }
 }
