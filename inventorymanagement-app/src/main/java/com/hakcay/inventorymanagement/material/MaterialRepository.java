@@ -10,22 +10,29 @@ package com.hakcay.inventorymanagement.material;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
+
 /**
  * @class MaterialRepository
  * @brief Repository class for managing material data storage.
  * @details Provides in-memory storage and CRUD operations for materials.
+ *          Uses HashTable for O(1) lookup performance.
  */
 public class MaterialRepository {
     
-    /** @brief In-memory list to store materials */
+    /** @brief In-memory list to store materials (for getAll() method) */
     private List<Material> materials;
+    
+    /** @brief HashTable for O(1) lookup by ID */
+    private HashTable<Integer, Material> materialMap;
     
     /**
      * @brief Default constructor.
-     * @details Initializes an empty list of materials.
+     * @details Initializes an empty list and hash table for materials.
      */
     public MaterialRepository() {
         this.materials = new ArrayList<>();
+        this.materialMap = new HashTable<>();
     }
     
     /**
@@ -35,6 +42,7 @@ public class MaterialRepository {
     public void add(Material material) {
         if (material != null) {
             materials.add(material);
+            materialMap.put(material.getId(), material);
         }
     }
     
@@ -48,16 +56,12 @@ public class MaterialRepository {
     
     /**
      * @brief Finds a material by its ID.
+     * @details Uses HashTable for O(1) lookup performance.
      * @param id The ID of the material to find
      * @return The material with the given ID, or null if not found
      */
     public Material findById(int id) {
-        for (Material material : materials) {
-            if (material.getId() == id) {
-                return material;
-            }
-        }
-        return null;
+        return materialMap.get(id);
     }
     
     /**
@@ -87,8 +91,9 @@ public class MaterialRepository {
      * @return true if the material was found and removed, false otherwise
      */
     public boolean remove(int id) {
-        Material material = findById(id);
+        Material material = materialMap.get(id);
         if (material != null) {
+            materialMap.remove(id);
             return materials.remove(material);
         }
         return false;

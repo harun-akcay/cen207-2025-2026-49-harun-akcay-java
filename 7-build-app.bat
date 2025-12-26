@@ -84,6 +84,14 @@ echo Perform Maven site generation
 call mvn site
 cd ..
 
+echo Regenerate coveragereport after mvn site (mvn site deletes it)
+cd inventorymanagement-app
+echo Generate ReportGenerator HTML Report (after mvn site)
+call reportgenerator "-reports:target\site\jacoco\jacoco.xml" "-sourcedirs:src\main\java" "-targetdir:target\site\coveragereport" -reporttypes:Html
+echo Generate ReportGenerator Badges (after mvn site)
+call reportgenerator "-reports:target\site\jacoco\jacoco.xml" "-sourcedirs:src\main\java" "-targetdir:target\site\coveragereport" -reporttypes:Badges
+cd ..
+
 echo Package Output Jar Files
 tar -czvf release\application-binary.tar.gz -C inventorymanagement-app\target '*.jar'
 
