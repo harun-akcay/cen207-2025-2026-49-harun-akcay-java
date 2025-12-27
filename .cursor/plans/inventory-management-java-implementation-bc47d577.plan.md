@@ -155,12 +155,12 @@
 - [x] Hash Tables algoritmasını implement et ve Material/Project lookup için entegre et
 - [x] Stack ve Queue algoritmalarını implement et ve undo/redo için entegre et
 - [x] Double Linked List algoritmasını implement et ve Material history için entegre et
-- [ ] Heap ve Heap Sort algoritmalarını implement et ve priority queue için entegre et
-- [ ] Sparse Matrix algoritmasını implement et ve warehouse layout için entegre et
-- [ ] XOR Linked List algoritmasını implement et ve memory-efficient list için entegre et
-- [ ] BFS/DFS algoritmalarını implement et ve project dependency graph için entegre et
-- [ ] Strongly Connected Components algoritmasını implement et ve cycle detection için entegre et
-- [ ] KMP Algorithm implement et ve search functionality için entegre et
+- [x] Heap ve Heap Sort algoritmalarını implement et ve priority queue için entegre et
+- [x] Sparse Matrix algoritmasını implement et ve warehouse layout için entegre et
+- [x] XOR Linked List algoritmasını implement et ve memory-efficient list için entegre et
+- [x] BFS/DFS algoritmalarını implement et ve project dependency graph için entegre et
+- [x] Strongly Connected Components algoritmasını implement et ve cycle detection için entegre et
+- [x] KMP Algorithm implement et ve search functionality için entegre et
 - [ ] Huffman Coding algoritmasını implement et ve compression için entegre et
 - [ ] B+ Tree algoritmasını implement et ve file indexing için entegre et
 - [ ] File Operations algoritmasını implement et ve persistent storage için entegre et

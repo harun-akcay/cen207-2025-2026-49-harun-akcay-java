@@ -211,5 +211,445 @@ public class ProjectServiceTest {
         assertNotNull(defaultService);
         assertEquals(0, defaultService.getAllProjects().size());
     }
+    
+    /**
+     * Test adding a dependency between projects.
+     */
+    @Test
+    public void testAddDependency() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependency(1, 2);
+        
+        assertTrue(service.hasDependencyPath(1, 2));
+    }
+    
+    /**
+     * Test adding dependency with non-existent project throws exception.
+     */
+    @Test
+    public void testAddDependencyNonExistentProjectThrows() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        try {
+            service.addDependency(1, 999);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("not found"));
+        }
+    }
+    
+    /**
+     * Test getting dependencies using BFS.
+     */
+    @Test
+    public void testGetDependenciesBFS() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        
+        List<Integer> dependencies = service.getDependenciesBFS(1);
+        assertEquals(2, dependencies.size());
+        assertTrue(dependencies.contains(2));
+        assertTrue(dependencies.contains(3));
+    }
+    
+    /**
+     * Test getting dependencies using DFS.
+     */
+    @Test
+    public void testGetDependenciesDFS() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        
+        List<Integer> dependencies = service.getDependenciesDFS(1);
+        assertEquals(2, dependencies.size());
+        assertTrue(dependencies.contains(2));
+        assertTrue(dependencies.contains(3));
+    }
+    
+    /**
+     * Test getting dependents using BFS.
+     */
+    @Test
+    public void testGetDependentsBFS() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(3, 2);
+        
+        List<Integer> dependents = service.getDependentsBFS(2);
+        assertEquals(2, dependents.size());
+        assertTrue(dependents.contains(1));
+        assertTrue(dependents.contains(3));
+    }
+    
+    /**
+     * Test hasDependencyPath returns true when path exists.
+     */
+    @Test
+    public void testHasDependencyPathTrue() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        
+        assertTrue(service.hasDependencyPath(1, 3));
+    }
+    
+    /**
+     * Test hasDependencyPath returns false when no path exists.
+     */
+    @Test
+    public void testHasDependencyPathFalse() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        assertFalse(service.hasDependencyPath(1, 2));
+    }
+    
+    /**
+     * Test findDependencyPath returns correct path.
+     */
+    @Test
+    public void testFindDependencyPath() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        
+        List<Integer> path = service.findDependencyPath(1, 3);
+        assertEquals(3, path.size());
+        assertEquals(Integer.valueOf(1), path.get(0));
+        assertEquals(Integer.valueOf(2), path.get(1));
+        assertEquals(Integer.valueOf(3), path.get(2));
+    }
+    
+    /**
+     * Test findDependencyPath returns empty list when no path exists.
+     */
+    @Test
+    public void testFindDependencyPathNoPath() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        List<Integer> path = service.findDependencyPath(1, 2);
+        assertTrue(path.isEmpty());
+    }
+    
+    /**
+     * Test removing a dependency.
+     */
+    @Test
+    public void testRemoveDependency() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependency(1, 2);
+        assertTrue(service.hasDependencyPath(1, 2));
+        
+        service.removeDependency(1, 2);
+        assertFalse(service.hasDependencyPath(1, 2));
+    }
+    
+    /**
+     * Test getting dependencies for non-existent project returns empty list.
+     */
+    @Test
+    public void testGetDependenciesNonExistentProject() {
+        List<Integer> dependencies = service.getDependenciesBFS(999);
+        assertTrue(dependencies.isEmpty());
+    }
+    
+    /**
+     * Test hasDependencyCycle returns false when no cycles exist.
+     */
+    @Test
+    public void testHasDependencyCycleFalse() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependency(1, 2);
+        assertFalse(service.hasDependencyCycle());
+    }
+    
+    /**
+     * Test hasDependencyCycle returns true when cycle exists.
+     */
+    @Test
+    public void testHasDependencyCycleTrue() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        service.addDependency(3, 1); // Creates cycle
+        
+        assertTrue(service.hasDependencyCycle());
+    }
+    
+    /**
+     * Test findDependencyCycles returns empty list when no cycles exist.
+     */
+    @Test
+    public void testFindDependencyCyclesNoCycles() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependency(1, 2);
+        List<List<Integer>> cycles = service.findDependencyCycles();
+        assertTrue(cycles.isEmpty());
+    }
+    
+    /**
+     * Test findDependencyCycles returns cycles when they exist.
+     */
+    @Test
+    public void testFindDependencyCyclesWithCycles() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        service.addDependency(3, 1); // Creates cycle
+        
+        List<List<Integer>> cycles = service.findDependencyCycles();
+        assertFalse(cycles.isEmpty());
+    }
+    
+    /**
+     * Test isProjectInCycle returns false when project is not in cycle.
+     */
+    @Test
+    public void testIsProjectInCycleFalse() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependency(1, 2);
+        assertFalse(service.isProjectInCycle(1));
+        assertFalse(service.isProjectInCycle(2));
+    }
+    
+    /**
+     * Test isProjectInCycle returns true when project is in cycle.
+     */
+    @Test
+    public void testIsProjectInCycleTrue() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependency(1, 2);
+        service.addDependency(2, 3);
+        service.addDependency(3, 1); // Creates cycle
+        
+        assertTrue(service.isProjectInCycle(1));
+        assertTrue(service.isProjectInCycle(2));
+        assertTrue(service.isProjectInCycle(3));
+    }
+    
+    /**
+     * Test isProjectInCycle returns false for non-existent project.
+     */
+    @Test
+    public void testIsProjectInCycleNonExistent() {
+        assertFalse(service.isProjectInCycle(999));
+    }
+    
+    /**
+     * Test addDependencySafe prevents cycle creation.
+     */
+    @Test
+    public void testAddDependencySafePreventsCycle() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        Project project3 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        service.addDependencySafe(1, 2);
+        service.addDependencySafe(2, 3);
+        
+        // This should throw exception because it would create a cycle
+        try {
+            service.addDependencySafe(3, 1);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("cycle"));
+        }
+        
+        // Verify cycle was not created
+        assertFalse(service.hasDependencyCycle());
+    }
+    
+    /**
+     * Test addDependencySafe allows non-cycle dependencies.
+     */
+    @Test
+    public void testAddDependencySafeAllowsNonCycle() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependencySafe(1, 2);
+        assertTrue(service.hasDependencyPath(1, 2));
+        assertFalse(service.hasDependencyCycle());
+    }
+    
+    /**
+     * Test addDependencySafe throws exception for non-existent project.
+     */
+    @Test
+    public void testAddDependencySafeNonExistentProject() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        try {
+            service.addDependencySafe(1, 999);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("not found"));
+        }
+    }
+    
+    @Test
+    public void testSearchProjectsByName() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        Project project2 = new Project(2, "Mobile App", "Build mobile application", "IN_PROGRESS");
+        Project project3 = new Project(3, "Website Maintenance", "Maintain existing website", "DONE");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        List<Project> results = service.searchProjectsByName("Website");
+        assertEquals(2, results.size());
+        assertTrue(results.contains(project1));
+        assertTrue(results.contains(project3));
+    }
+    
+    @Test
+    public void testSearchProjectsByNameCaseInsensitive() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByName("website");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchProjectsByNameNoMatch() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByName("Mobile");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByNameNullPattern() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByName(null);
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByNameEmptyPattern() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByName("");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByGoal() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        Project project2 = new Project(2, "Mobile App", "Build mobile application", "IN_PROGRESS");
+        Project project3 = new Project(3, "Website Maintenance", "Maintain existing website", "DONE");
+        service.addProject(project1);
+        service.addProject(project2);
+        service.addProject(project3);
+        
+        List<Project> results = service.searchProjectsByGoal("website");
+        assertEquals(2, results.size());
+        assertTrue(results.contains(project1));
+        assertTrue(results.contains(project3));
+    }
+    
+    @Test
+    public void testSearchProjects() {
+        Project project1 = new Project(1, "Website Redesign", "Redesign company website", "PLANNED");
+        Project project2 = new Project(2, "Mobile App", "Build mobile application", "IN_PROGRESS");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        List<Project> results = service.searchProjects("Website");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+        
+        results = service.searchProjects("mobile");
+        assertEquals(1, results.size());
+        assertEquals(project2, results.get(0));
+    }
 }
 

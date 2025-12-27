@@ -258,5 +258,88 @@ public class MaterialServiceTest {
         assertFalse(removed);
         assertFalse(service.canUndo());
     }
+    
+    @Test
+    public void testSearchMaterialsByName() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        Material material2 = new Material(2, "Wood Plank", "Wood", 50, 5.00);
+        Material material3 = new Material(3, "Steel Wire", "Metal", 200, 2.50);
+        service.addMaterial(material1);
+        service.addMaterial(material2);
+        service.addMaterial(material3);
+        
+        List<Material> results = service.searchMaterialsByName("Steel");
+        assertEquals(2, results.size());
+        assertTrue(results.contains(material1));
+        assertTrue(results.contains(material3));
+    }
+    
+    @Test
+    public void testSearchMaterialsByNameCaseInsensitive() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByName("steel");
+        assertEquals(1, results.size());
+        assertEquals(material1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchMaterialsByNameNoMatch() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByName("Wood");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsByNameNullPattern() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByName(null);
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsByNameEmptyPattern() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByName("");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsByType() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        Material material2 = new Material(2, "Wood Plank", "Wood", 50, 5.00);
+        Material material3 = new Material(3, "Steel Wire", "Metal", 200, 2.50);
+        service.addMaterial(material1);
+        service.addMaterial(material2);
+        service.addMaterial(material3);
+        
+        List<Material> results = service.searchMaterialsByType("Metal");
+        assertEquals(2, results.size());
+        assertTrue(results.contains(material1));
+        assertTrue(results.contains(material3));
+    }
+    
+    @Test
+    public void testSearchMaterials() {
+        Material material1 = new Material(1, "Steel Bar", "Metal", 100, 10.50);
+        Material material2 = new Material(2, "Wood Plank", "Wood", 50, 5.00);
+        service.addMaterial(material1);
+        service.addMaterial(material2);
+        
+        List<Material> results = service.searchMaterials("Steel");
+        assertEquals(1, results.size());
+        assertEquals(material1, results.get(0));
+        
+        results = service.searchMaterials("Wood");
+        assertEquals(1, results.size());
+        assertEquals(material2, results.get(0));
+    }
 }
 

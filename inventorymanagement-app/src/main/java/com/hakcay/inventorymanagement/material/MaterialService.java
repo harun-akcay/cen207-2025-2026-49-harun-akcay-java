@@ -7,8 +7,10 @@
  */
 package com.hakcay.inventorymanagement.material;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.hakcay.inventorymanagement.algorithms.kmp.KMPAlgorithm;
 import com.hakcay.inventorymanagement.algorithms.stackqueue.Stack;
 
 /**
@@ -200,6 +202,79 @@ public class MaterialService {
      */
     public boolean canRedo() {
         return !redoStack.isEmpty();
+    }
+    
+    /**
+     * @brief Searches for materials by name using KMP algorithm.
+     * @param pattern The search pattern
+     * @return List of materials whose names contain the pattern
+     */
+    public List<Material> searchMaterialsByName(String pattern) {
+        List<Material> results = new ArrayList<>();
+        if (pattern == null || pattern.isEmpty()) {
+            return results;
+        }
+        
+        List<Material> allMaterials = repository.getAll();
+        for (Material material : allMaterials) {
+            if (material != null && material.getName() != null) {
+                if (KMPAlgorithm.containsIgnoreCase(material.getName(), pattern)) {
+                    results.add(material);
+                }
+            }
+        }
+        return results;
+    }
+    
+    /**
+     * @brief Searches for materials by type using KMP algorithm.
+     * @param pattern The search pattern
+     * @return List of materials whose types contain the pattern
+     */
+    public List<Material> searchMaterialsByType(String pattern) {
+        List<Material> results = new ArrayList<>();
+        if (pattern == null || pattern.isEmpty()) {
+            return results;
+        }
+        
+        List<Material> allMaterials = repository.getAll();
+        for (Material material : allMaterials) {
+            if (material != null && material.getType() != null) {
+                if (KMPAlgorithm.containsIgnoreCase(material.getType(), pattern)) {
+                    results.add(material);
+                }
+            }
+        }
+        return results;
+    }
+    
+    /**
+     * @brief Searches for materials by name or type using KMP algorithm.
+     * @param pattern The search pattern
+     * @return List of materials whose names or types contain the pattern
+     */
+    public List<Material> searchMaterials(String pattern) {
+        List<Material> results = new ArrayList<>();
+        if (pattern == null || pattern.isEmpty()) {
+            return results;
+        }
+        
+        List<Material> allMaterials = repository.getAll();
+        for (Material material : allMaterials) {
+            if (material != null) {
+                boolean matches = false;
+                if (material.getName() != null) {
+                    matches = KMPAlgorithm.containsIgnoreCase(material.getName(), pattern);
+                }
+                if (!matches && material.getType() != null) {
+                    matches = KMPAlgorithm.containsIgnoreCase(material.getType(), pattern);
+                }
+                if (matches) {
+                    results.add(material);
+                }
+            }
+        }
+        return results;
     }
 }
 
