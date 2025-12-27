@@ -162,7 +162,7 @@
 - [x] Strongly Connected Components algoritmasını implement et ve cycle detection için entegre et
 - [x] KMP Algorithm implement et ve search functionality için entegre et
 - [x] Huffman Coding algoritmasını implement et ve compression için entegre et
-- [ ] B+ Tree algoritmasını implement et ve file indexing için entegre et
+- [x] B+ Tree algoritmasını implement et ve file indexing için entegre et
 - [ ] File Operations algoritmasını implement et ve persistent storage için entegre et
 - [ ] InventorymanagementApp main method ve console menu implement et
 - [ ] Sales Tracker modülünü implement et: Sale model, SaleService ve testleri

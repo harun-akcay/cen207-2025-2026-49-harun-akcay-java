@@ -283,5 +283,82 @@ public class ProjectRepositoryTest {
         List<Project> projects = repo.loadAll();
         assertEquals(0, projects.size()); // Should return empty list
     }
+    
+    @Test
+    public void testGetAllOrdered() {
+        Project project1 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        Project project2 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project3 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        
+        List<Project> projects = new ArrayList<>();
+        projects.add(project1);
+        projects.add(project2);
+        projects.add(project3);
+        repository.saveAll(projects);
+        
+        List<Project> ordered = repository.getAllOrdered();
+        assertEquals(3, ordered.size());
+        assertEquals(1, ordered.get(0).getId());
+        assertEquals(2, ordered.get(1).getId());
+        assertEquals(3, ordered.get(2).getId());
+    }
+    
+    @Test
+    public void testGetAllOrderedEmpty() {
+        List<Project> ordered = repository.getAllOrdered();
+        assertTrue(ordered.isEmpty());
+    }
+    
+    @Test
+    public void testGetAllEntriesOrdered() {
+        Project project1 = new Project(3, "Project 3", "Goal 3", "PLANNED");
+        Project project2 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        
+        List<Project> projects = new ArrayList<>();
+        projects.add(project1);
+        projects.add(project2);
+        repository.saveAll(projects);
+        
+        List<com.hakcay.inventorymanagement.algorithms.bplustree.BPlusTree.Entry<Integer, Project>> entries = repository.getAllEntriesOrdered();
+        assertEquals(2, entries.size());
+        assertEquals(Integer.valueOf(1), entries.get(0).getKey());
+        assertEquals(project2, entries.get(0).getValue());
+        assertEquals(Integer.valueOf(3), entries.get(1).getKey());
+        assertEquals(project1, entries.get(1).getValue());
+    }
+    
+    @Test
+    public void testGetAllEntriesOrderedEmpty() {
+        List<com.hakcay.inventorymanagement.algorithms.bplustree.BPlusTree.Entry<Integer, Project>> entries = repository.getAllEntriesOrdered();
+        assertTrue(entries.isEmpty());
+    }
+    
+    @Test
+    public void testFindByIdUsingIndex() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        
+        List<Project> projects = new ArrayList<>();
+        projects.add(project1);
+        projects.add(project2);
+        repository.saveAll(projects);
+        
+        Project found = repository.findByIdUsingIndex(1);
+        assertNotNull(found);
+        assertEquals(project1, found);
+        
+        found = repository.findByIdUsingIndex(2);
+        assertNotNull(found);
+        assertEquals(project2, found);
+        
+        found = repository.findByIdUsingIndex(999);
+        assertNull(found);
+    }
+    
+    @Test
+    public void testFindByIdUsingIndexEmpty() {
+        Project found = repository.findByIdUsingIndex(1);
+        assertNull(found);
+    }
 }
 

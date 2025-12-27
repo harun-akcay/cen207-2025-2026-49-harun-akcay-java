@@ -158,5 +158,53 @@ public class MaterialRepositoryTest {
         List<Material> history = repository.getHistory();
         assertEquals(100, history.get(0).getQuantity());
     }
+    
+    @Test
+    public void testUpdateNonExistentMaterial() {
+        Material material = new Material(999, "New", "Type", 10, 5.0);
+        boolean result = repository.update(material);
+        assertFalse(result);
+        assertNull(repository.findById(999));
+    }
+    
+    @Test
+    public void testUpdateWithNullName() {
+        Material material = new Material(1, "Steel", "Metal", 100, 10.50);
+        repository.add(material);
+        
+        Material updated = new Material(1, null, "Metal", 100, 10.50);
+        boolean result = repository.update(updated);
+        assertTrue(result);
+        assertNull(repository.findById(1).getName());
+    }
+    
+    @Test
+    public void testUpdateWithNullType() {
+        Material material = new Material(1, "Steel", "Metal", 100, 10.50);
+        repository.add(material);
+        
+        Material updated = new Material(1, "Steel", null, 100, 10.50);
+        boolean result = repository.update(updated);
+        assertTrue(result);
+        assertNull(repository.findById(1).getType());
+    }
+    
+    @Test
+    public void testRemoveNonExistentMaterial() {
+        boolean result = repository.remove(999);
+        assertFalse(result);
+        assertEquals(0, repository.getHistorySize());
+    }
+    
+    @Test
+    public void testGetHistoryAfterClear() {
+        Material material = new Material(1, "Steel", "Metal", 100, 10.50);
+        repository.add(material);
+        repository.clearHistory();
+        
+        assertEquals(0, repository.getHistorySize());
+        assertTrue(repository.getHistory().isEmpty());
+        assertTrue(repository.getHistoryReverse().isEmpty());
+    }
 }
 

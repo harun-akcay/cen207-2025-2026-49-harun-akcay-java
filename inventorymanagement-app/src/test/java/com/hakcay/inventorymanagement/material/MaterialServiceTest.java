@@ -430,5 +430,144 @@ public class MaterialServiceTest {
         int restored = service.restoreFromBackup(backup.getEncoded(), backup.getEncodingTable());
         assertEquals(0, restored);
     }
+    
+    @Test
+    public void testUpdateMaterialWithNonExistentId() {
+        // Update a material that doesn't exist - should still work but existing will be null
+        Material material = new Material(999, "New", "Type", 10, 5.0);
+        service.updateMaterial(material);
+        // Should not throw exception, but existing will be null
+        assertTrue(service.canUndo());
+        // Material should be added to repository
+        assertNotNull(service.getMaterialById(999));
+    }
+    
+    @Test
+    public void testDecompressMaterialsWithInvalidFormat() {
+        // Create a backup with valid data
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult compressed = service.compressMaterials();
+        
+        // Try to decompress with corrupted/invalid encoding table
+        java.util.HashMap<Character, String> invalidTable = new java.util.HashMap<>();
+        invalidTable.put('X', "invalid");
+        List<Material> decompressed = service.decompressMaterials(compressed.getEncoded(), invalidTable);
+        // Should handle gracefully
+        assertNotNull(decompressed);
+    }
+    
+    @Test
+    public void testDecompressMaterialsWithInvalidNumberFormat() {
+        // Create encoded data that will produce invalid number format when parsed
+        // Use a simple encoding that produces "abc,def,ghi,invalid,invalid;"
+        java.util.HashMap<Character, String> table = new java.util.HashMap<>();
+        table.put('a', "0");
+        table.put('b', "1");
+        table.put('c', "00");
+        table.put(',', "01");
+        table.put('d', "10");
+        table.put('e', "11");
+        table.put('f', "000");
+        table.put('g', "001");
+        table.put('h', "010");
+        table.put('i', "011");
+        table.put(';', "100");
+        // This will create a string with invalid numbers
+        String invalidEncoded = "001010000110111000001001011100"; // "abc,def,ghi,invalid,invalid;"
+        List<Material> decompressed = service.decompressMaterials(invalidEncoded, table);
+        // Should skip invalid entries
+        assertTrue(decompressed.isEmpty());
+    }
+    
+    @Test
+    public void testDecompressMaterialsWithValidAndInvalidMixed() {
+        // Create a backup with valid data
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult compressed = service.compressMaterials();
+        
+        // Decompress should work
+        List<Material> decompressed = service.decompressMaterials(compressed.getEncoded(), compressed.getEncodingTable());
+        assertEquals(1, decompressed.size());
+        assertEquals(material1.getId(), decompressed.get(0).getId());
+    }
+    
+    @Test
+    public void testDecompressMaterialsWithIncompleteData() {
+        // Test with incomplete material data (less than 5 parts)
+        java.util.HashMap<Character, String> table = new java.util.HashMap<>();
+        table.put('1', "0");
+        table.put(',', "1");
+        String incompleteEncoded = "01"; // Incomplete
+        List<Material> decompressed = service.decompressMaterials(incompleteEncoded, table);
+        assertTrue(decompressed.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsByTypeCaseInsensitive() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByType("metal");
+        assertEquals(1, results.size());
+        assertEquals(material1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchMaterialsByTypeNoMatch() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByType("Wood");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsByTypeNullPattern() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByType(null);
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsByTypeEmptyPattern() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterialsByType("");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchMaterialsWithNullName() {
+        Material material1 = new Material(1, null, "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterials("Metal");
+        assertEquals(1, results.size());
+        assertEquals(material1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchMaterialsWithNullType() {
+        Material material1 = new Material(1, "Steel", null, 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterials("Steel");
+        assertEquals(1, results.size());
+        assertEquals(material1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchMaterialsWithBothNull() {
+        Material material1 = new Material(1, null, null, 100, 10.50);
+        service.addMaterial(material1);
+        
+        List<Material> results = service.searchMaterials("Steel");
+        assertTrue(results.isEmpty());
+    }
 }
 

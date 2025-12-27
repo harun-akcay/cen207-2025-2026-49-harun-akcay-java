@@ -651,5 +651,71 @@ public class ProjectServiceTest {
         assertEquals(1, results.size());
         assertEquals(project2, results.get(0));
     }
+    
+    @Test
+    public void testSearchProjectsWithNullName() {
+        Project project1 = new Project(1, null, "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjects("Build");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchProjectsWithNullGoal() {
+        Project project1 = new Project(1, "Website", null, "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjects("Website");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchProjectsWithBothNull() {
+        Project project1 = new Project(1, null, null, "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjects("Website");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByGoalCaseInsensitive() {
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByGoal("BUILD");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchProjectsByGoalNullPattern() {
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByGoal(null);
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByGoalEmptyPattern() {
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByGoal("");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByGoalNoMatch() {
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByGoal("Mobile");
+        assertTrue(results.isEmpty());
+    }
 }
 

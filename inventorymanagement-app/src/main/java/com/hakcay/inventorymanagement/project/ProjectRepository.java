@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hakcay.inventorymanagement.algorithms.bplustree.BPlusTree;
 import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
 
 /**
  * Repository class for persisting Project objects to a CSV file.
  * Handles reading from and writing to projects.csv file.
  * Uses HashTable for O(1) lookup performance.
+ * Uses B+ Tree for ordered indexing and file indexing.
  */
 public class ProjectRepository {
     private static final String DEFAULT_CSV_FILE = "projects.csv";
@@ -24,6 +26,9 @@ public class ProjectRepository {
     
     /** @brief HashTable for O(1) lookup by ID */
     private HashTable<Integer, Project> projectMap;
+    
+    /** @brief B+ Tree for ordered indexing by ID */
+    private BPlusTree<Integer, Project> projectIndex;
 
     /**
      * Default constructor that uses the default CSV file name.
@@ -31,6 +36,7 @@ public class ProjectRepository {
     public ProjectRepository() {
         this.csvFile = DEFAULT_CSV_FILE;
         this.projectMap = new HashTable<>();
+        this.projectIndex = new BPlusTree<>();
     }
 
     /**
@@ -41,6 +47,7 @@ public class ProjectRepository {
     public ProjectRepository(String filePath) {
         this.csvFile = filePath;
         this.projectMap = new HashTable<>();
+        this.projectIndex = new BPlusTree<>();
     }
 
     /**
@@ -53,6 +60,7 @@ public class ProjectRepository {
     public List<Project> loadAll() {
         List<Project> projects = new ArrayList<>();
         projectMap = new HashTable<>(); // Reset HashTable
+        projectIndex = new BPlusTree<>(); // Reset B+ Tree
         File file = new File(csvFile);
 
         // Return empty list if file doesn't exist
@@ -73,6 +81,7 @@ public class ProjectRepository {
                 if (project != null) {
                     projects.add(project);
                     projectMap.put(project.getId(), project); // Add to HashTable
+                    projectIndex.insert(project.getId(), project); // Add to B+ Tree
                 }
             }
         } catch (IOException e) {
@@ -95,11 +104,13 @@ public class ProjectRepository {
             projects = new ArrayList<>();
         }
 
-        // Update HashTable to keep it in sync
+        // Update HashTable and B+ Tree to keep them in sync
         projectMap = new HashTable<>();
+        projectIndex = new BPlusTree<>();
         for (Project project : projects) {
             if (project != null) {
                 projectMap.put(project.getId(), project);
+                projectIndex.insert(project.getId(), project);
             }
         }
 
@@ -127,6 +138,34 @@ public class ProjectRepository {
      */
     public Project findById(int id) {
         return projectMap.get(id);
+    }
+    
+    /**
+     * Gets all projects in ascending ID order using B+ Tree indexing.
+     *
+     * @return List of projects sorted by ID
+     */
+    public List<Project> getAllOrdered() {
+        return projectIndex.getAllValues();
+    }
+    
+    /**
+     * Gets all project entries in ascending ID order using B+ Tree indexing.
+     *
+     * @return List of project entries sorted by ID
+     */
+    public List<BPlusTree.Entry<Integer, Project>> getAllEntriesOrdered() {
+        return projectIndex.getAllEntries();
+    }
+    
+    /**
+     * Searches for a project using B+ Tree (alternative to HashTable lookup).
+     *
+     * @param id The ID of the project to find
+     * @return The project with the given ID, or null if not found
+     */
+    public Project findByIdUsingIndex(int id) {
+        return projectIndex.search(id);
     }
 
     /**
