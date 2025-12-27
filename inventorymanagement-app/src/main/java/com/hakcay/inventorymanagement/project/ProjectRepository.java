@@ -9,21 +9,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
+
 /**
  * Repository class for persisting Project objects to a CSV file.
  * Handles reading from and writing to projects.csv file.
+ * Uses HashTable for O(1) lookup performance.
  */
 public class ProjectRepository {
     private static final String DEFAULT_CSV_FILE = "projects.csv";
     private static final String CSV_SEPARATOR = ",";
     private static final String COMMA_PLACEHOLDER = "|COMMA|";
     private final String csvFile;
+    
+    /** @brief HashTable for O(1) lookup by ID */
+    private HashTable<Integer, Project> projectMap;
 
     /**
      * Default constructor that uses the default CSV file name.
      */
     public ProjectRepository() {
         this.csvFile = DEFAULT_CSV_FILE;
+        this.projectMap = new HashTable<>();
     }
 
     /**
@@ -33,16 +40,19 @@ public class ProjectRepository {
      */
     public ProjectRepository(String filePath) {
         this.csvFile = filePath;
+        this.projectMap = new HashTable<>();
     }
 
     /**
      * Loads all projects from the CSV file.
      * Returns an empty list if the file doesn't exist or is empty.
+     * Also populates the HashTable for O(1) lookup.
      *
      * @return list of all projects
      */
     public List<Project> loadAll() {
         List<Project> projects = new ArrayList<>();
+        projectMap = new HashTable<>(); // Reset HashTable
         File file = new File(csvFile);
 
         // Return empty list if file doesn't exist
@@ -62,6 +72,7 @@ public class ProjectRepository {
                 Project project = parseProject(line);
                 if (project != null) {
                     projects.add(project);
+                    projectMap.put(project.getId(), project); // Add to HashTable
                 }
             }
         } catch (IOException e) {
@@ -75,6 +86,7 @@ public class ProjectRepository {
     /**
      * Saves all projects to the CSV file.
      * Overwrites the existing file with the new data.
+     * Also updates the HashTable to keep it in sync.
      *
      * @param projects the list of projects to save
      */
@@ -83,17 +95,38 @@ public class ProjectRepository {
             projects = new ArrayList<>();
         }
 
+        // Update HashTable to keep it in sync
+        projectMap = new HashTable<>();
+        for (Project project : projects) {
+            if (project != null) {
+                projectMap.put(project.getId(), project);
+            }
+        }
+
         File file = new File(csvFile);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             for (Project project : projects) {
-                String line = formatProject(project);
-                writer.write(line);
-                writer.newLine();
+                if (project != null) { // Skip null projects
+                    String line = formatProject(project);
+                    writer.write(line);
+                    writer.newLine();
+                }
             }
         } catch (IOException e) {
             // Silently handle IO errors
             // In a production system, you might want to log this
         }
+    }
+
+    /**
+     * Finds a project by its ID.
+     * Uses HashTable for O(1) lookup performance.
+     *
+     * @param id The ID of the project to find
+     * @return The project with the given ID, or null if not found
+     */
+    public Project findById(int id) {
+        return projectMap.get(id);
     }
 
     /**

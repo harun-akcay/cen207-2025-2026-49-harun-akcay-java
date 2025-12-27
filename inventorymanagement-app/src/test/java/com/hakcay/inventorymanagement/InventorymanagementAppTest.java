@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.hakcay.inventorymanagement.Inventorymanagement;
 import com.hakcay.inventorymanagement.InventorymanagementApp;
 import com.hakcay.inventorymanagement.material.Material;
 import com.hakcay.inventorymanagement.material.MaterialService;
@@ -409,6 +410,57 @@ public class InventorymanagementAppTest {
       System.setIn(originalIn);
       System.setOut(originalOut);
     }
+  }
+
+  /**
+   * @brief Test InventorymanagementApp main method directly.
+   * @details This test directly calls main method to ensure coverage.
+   */
+  @Test
+  public void testInventorymanagementAppMainDirect() {
+    PrintStream originalOut = System.out;
+    try {
+      ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(outContent));
+      
+      InventorymanagementApp.main(new String[]{});
+      
+      String output = outContent.toString();
+      assertNotNull(output);
+      assertTrue(output.contains("Inventory Management App"));
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
+  /**
+   * @brief Test InventorymanagementApp main method with args.
+   * @details This test calls main method with command line arguments.
+   */
+  @Test
+  public void testInventorymanagementAppMainWithArgs() {
+    PrintStream originalOut = System.out;
+    try {
+      ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+      System.setOut(new PrintStream(outContent));
+      
+      InventorymanagementApp.main(new String[]{"arg1", "arg2"});
+      
+      String output = outContent.toString();
+      assertNotNull(output);
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
+  /**
+   * @brief Test Inventorymanagement class instantiation.
+   * @details This test ensures Inventorymanagement class can be instantiated.
+   */
+  @Test
+  public void testInventorymanagementClass() {
+    Inventorymanagement inventory = new Inventorymanagement();
+    assertNotNull(inventory);
   }
 
 }

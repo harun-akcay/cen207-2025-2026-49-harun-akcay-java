@@ -172,5 +172,37 @@ public class ExpenseServiceTest {
         assertEquals(75.25, loadedExpenses.get(2).getAmount(), 0.001);
         assertEquals("Plastic purchase", loadedExpenses.get(2).getDescription());
     }
+
+    /**
+     * Test that addExpense throws IllegalArgumentException when expense is null.
+     */
+    @Test
+    public void testAddExpenseNullThrows() {
+        try {
+            service.addExpense(null);
+            fail("Expected IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("cannot be null"));
+        }
+    }
+
+    /**
+     * Test default constructor.
+     */
+    @Test
+    public void testDefaultConstructor() {
+        ExpenseService defaultService = new ExpenseService();
+        assertNotNull(defaultService);
+        assertEquals(0, defaultService.getAllExpenses().size());
+    }
+
+    /**
+     * Test getTotalExpenseForProject with empty expenses.
+     */
+    @Test
+    public void testGetTotalExpenseForProjectWithEmptyExpenses() {
+        double total = service.getTotalExpenseForProject(100);
+        assertEquals(0.0, total, 0.001);
+    }
 }
 

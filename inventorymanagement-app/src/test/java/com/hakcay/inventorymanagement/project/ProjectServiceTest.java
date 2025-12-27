@@ -175,5 +175,41 @@ public class ProjectServiceTest {
         assertEquals("Migrate to new database", loadedProjects.get(2).getGoal());
         assertEquals("DONE", loadedProjects.get(2).getStatus());
     }
+
+    /**
+     * Test that addProject throws IllegalArgumentException when project is null.
+     */
+    @Test
+    public void testAddProjectNullThrows() {
+        try {
+            service.addProject(null);
+            fail("Expected IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("cannot be null"));
+        }
+    }
+
+    /**
+     * Test that updateProject throws IllegalArgumentException when project is null.
+     */
+    @Test
+    public void testUpdateProjectNullThrows() {
+        try {
+            service.updateProject(null);
+            fail("Expected IllegalArgumentException to be thrown");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("cannot be null"));
+        }
+    }
+
+    /**
+     * Test default constructor.
+     */
+    @Test
+    public void testDefaultConstructor() {
+        ProjectService defaultService = new ProjectService();
+        assertNotNull(defaultService);
+        assertEquals(0, defaultService.getAllProjects().size());
+    }
 }
 

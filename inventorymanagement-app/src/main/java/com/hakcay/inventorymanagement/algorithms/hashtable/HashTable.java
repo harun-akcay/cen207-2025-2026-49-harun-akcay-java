@@ -204,7 +204,21 @@ public class HashTable<K, V> {
      * @return true if the key exists, false otherwise
      */
     public boolean containsKey(K key) {
-        return get(key) != null;
+        if (key == null) {
+            return false;
+        }
+        
+        int index = hash(key);
+        Node<K, V> current = buckets[index];
+        
+        while (current != null) {
+            if (current.key.equals(key)) {
+                return true;
+            }
+            current = current.next;
+        }
+        
+        return false;
     }
     
     /**

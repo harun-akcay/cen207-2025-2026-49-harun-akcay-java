@@ -151,10 +151,10 @@
 
 - [x] Material Inventory modülünü implement et: Material model, MaterialRepository, MaterialService ve testleri
 - [x] Project Tracking modülünü implement et: Project model, ProjectRepository, ProjectService ve testleri
-- [ ] Expense Logging modülünü implement et: Expense model, ExpenseRepository, ExpenseService ve testleri
-- [ ] Hash Tables algoritmasını implement et ve Material/Project lookup için entegre et
-- [ ] Stack ve Queue algoritmalarını implement et ve undo/redo için entegre et
-- [ ] Double Linked List algoritmasını implement et ve Material history için entegre et
+- [x] Expense Logging modülünü implement et: Expense model, ExpenseRepository, ExpenseService ve testleri
+- [x] Hash Tables algoritmasını implement et ve Material/Project lookup için entegre et
+- [x] Stack ve Queue algoritmalarını implement et ve undo/redo için entegre et
+- [x] Double Linked List algoritmasını implement et ve Material history için entegre et
 - [ ] Heap ve Heap Sort algoritmalarını implement et ve priority queue için entegre et
 - [ ] Sparse Matrix algoritmasını implement et ve warehouse layout için entegre et
 - [ ] XOR Linked List algoritmasını implement et ve memory-efficient list için entegre et

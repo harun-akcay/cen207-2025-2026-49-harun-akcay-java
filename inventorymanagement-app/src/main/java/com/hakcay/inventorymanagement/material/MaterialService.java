@@ -9,16 +9,25 @@ package com.hakcay.inventorymanagement.material;
 
 import java.util.List;
 
+import com.hakcay.inventorymanagement.algorithms.stackqueue.Stack;
+
 /**
  * @class MaterialService
  * @brief Service class for managing material operations.
  * @details Provides business logic for material management including
  *          adding, updating, retrieving, and removing materials.
+ *          Supports undo/redo operations using Stack.
  */
 public class MaterialService {
     
     /** @brief Repository for material data access */
     private MaterialRepository repository;
+    
+    /** @brief Stack for undo operations */
+    private Stack<MaterialAction> undoStack;
+    
+    /** @brief Stack for redo operations */
+    private Stack<MaterialAction> redoStack;
     
     /**
      * @brief Default constructor.
@@ -26,6 +35,8 @@ public class MaterialService {
      */
     public MaterialService() {
         this.repository = new MaterialRepository();
+        this.undoStack = new Stack<>();
+        this.redoStack = new Stack<>();
     }
     
     /**
@@ -34,6 +45,8 @@ public class MaterialService {
      */
     public MaterialService(MaterialRepository repository) {
         this.repository = repository;
+        this.undoStack = new Stack<>();
+        this.redoStack = new Stack<>();
     }
     
     /**
@@ -42,7 +55,14 @@ public class MaterialService {
      */
     public void addMaterial(Material material) {
         if (material != null) {
+            MaterialAction action = new MaterialAction(
+                MaterialAction.ActionType.ADD,
+                null, // No material before add
+                material
+            );
             repository.add(material);
+            undoStack.push(action);
+            redoStack.clear(); // Clear redo stack when new action is performed
         }
     }
     
@@ -60,7 +80,15 @@ public class MaterialService {
      */
     public void updateMaterial(Material material) {
         if (material != null) {
+            Material existing = repository.findById(material.getId());
+            MaterialAction action = new MaterialAction(
+                MaterialAction.ActionType.UPDATE,
+                existing, // Material before update
+                material  // Material after update
+            );
             repository.update(material);
+            undoStack.push(action);
+            redoStack.clear(); // Clear redo stack when new action is performed
         }
     }
     
@@ -70,7 +98,21 @@ public class MaterialService {
      * @return true if the material was found and removed, false otherwise
      */
     public boolean removeMaterialById(int id) {
-        return repository.remove(id);
+        Material existing = repository.findById(id);
+        if (existing != null) {
+            MaterialAction action = new MaterialAction(
+                MaterialAction.ActionType.REMOVE,
+                existing, // Material before remove
+                null      // No material after remove
+            );
+            boolean removed = repository.remove(id);
+            if (removed) {
+                undoStack.push(action);
+                redoStack.clear(); // Clear redo stack when new action is performed
+            }
+            return removed;
+        }
+        return false;
     }
     
     /**
@@ -80,6 +122,84 @@ public class MaterialService {
      */
     public Material getMaterialById(int id) {
         return repository.findById(id);
+    }
+    
+    /**
+     * @brief Undoes the last action performed.
+     * @return true if an action was undone, false if there are no actions to undo
+     */
+    public boolean undo() {
+        if (undoStack.isEmpty()) {
+            return false;
+        }
+        
+        MaterialAction action = undoStack.pop();
+        
+        switch (action.getActionType()) {
+            case ADD:
+                // Undo add: remove the material
+                repository.remove(action.getMaterialAfter().getId());
+                break;
+            case UPDATE:
+                // Undo update: restore previous state
+                repository.update(action.getMaterialBefore());
+                break;
+            case REMOVE:
+                // Undo remove: add the material back
+                repository.add(action.getMaterialBefore());
+                break;
+        }
+        
+        // Push to redo stack
+        redoStack.push(action);
+        return true;
+    }
+    
+    /**
+     * @brief Redoes the last undone action.
+     * @return true if an action was redone, false if there are no actions to redo
+     */
+    public boolean redo() {
+        if (redoStack.isEmpty()) {
+            return false;
+        }
+        
+        MaterialAction action = redoStack.pop();
+        
+        switch (action.getActionType()) {
+            case ADD:
+                // Redo add: add the material back
+                repository.add(action.getMaterialAfter());
+                break;
+            case UPDATE:
+                // Redo update: apply the update again
+                repository.update(action.getMaterialAfter());
+                break;
+            case REMOVE:
+                // Redo remove: remove the material again
+                repository.remove(action.getMaterialBefore().getId());
+                break;
+        }
+        
+        // Push back to undo stack
+        undoStack.push(action);
+        return true;
+    }
+    
+    /**
+     * @brief Checks if there are actions available to undo.
+     * @return true if undo is available, false otherwise
+     */
+    public boolean canUndo() {
+        return !undoStack.isEmpty();
+    }
+    
+    /**
+     * @brief Checks if there are actions available to redo.
+     * @return true if redo is available, false otherwise
+     */
+    public boolean canRedo() {
+        return !redoStack.isEmpty();
     }
 }
 
