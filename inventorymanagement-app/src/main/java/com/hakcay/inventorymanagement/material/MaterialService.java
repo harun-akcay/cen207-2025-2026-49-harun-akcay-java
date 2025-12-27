@@ -9,7 +9,9 @@ package com.hakcay.inventorymanagement.material;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding;
 import com.hakcay.inventorymanagement.algorithms.kmp.KMPAlgorithm;
 import com.hakcay.inventorymanagement.algorithms.stackqueue.Stack;
 
@@ -275,6 +277,101 @@ public class MaterialService {
             }
         }
         return results;
+    }
+    
+    /**
+     * @brief Compresses all materials data using Huffman coding.
+     * @details Serializes all materials to a string and compresses it.
+     * @return EncodedResult containing compressed data and encoding table
+     */
+    public HuffmanCoding.EncodedResult compressMaterials() {
+        List<Material> materials = repository.getAll();
+        StringBuilder data = new StringBuilder();
+        
+        for (Material material : materials) {
+            if (material != null) {
+                data.append(material.getId()).append(",");
+                data.append(material.getName() != null ? material.getName() : "").append(",");
+                data.append(material.getType() != null ? material.getType() : "").append(",");
+                data.append(material.getQuantity()).append(",");
+                data.append(material.getUnitCost()).append(";");
+            }
+        }
+        
+        return HuffmanCoding.encode(data.toString());
+    }
+    
+    /**
+     * @brief Decompresses materials data using Huffman coding.
+     * @details Decompresses the data and reconstructs materials.
+     * @param encoded The compressed data
+     * @param encodingTable The encoding table used for compression
+     * @return List of decompressed materials
+     */
+    public List<Material> decompressMaterials(String encoded, Map<Character, String> encodingTable) {
+        List<Material> materials = new ArrayList<>();
+        
+        if (encoded == null || encoded.isEmpty() || encodingTable == null || encodingTable.isEmpty()) {
+            return materials;
+        }
+        
+        String decompressed = HuffmanCoding.decode(encoded, encodingTable);
+        if (decompressed == null || decompressed.isEmpty()) {
+            return materials;
+        }
+        
+        // Parse decompressed string
+        String[] materialStrings = decompressed.split(";");
+        for (String materialString : materialStrings) {
+            if (materialString != null && !materialString.isEmpty()) {
+                String[] parts = materialString.split(",");
+                if (parts.length >= 5) {
+                    try {
+                        int id = Integer.parseInt(parts[0]);
+                        String name = parts[1];
+                        String type = parts[2];
+                        int quantity = Integer.parseInt(parts[3]);
+                        double unitCost = Double.parseDouble(parts[4]);
+                        
+                        Material material = new Material(id, name, type, quantity, unitCost);
+                        materials.add(material);
+                    } catch (NumberFormatException e) {
+                        // Skip invalid entries
+                    }
+                }
+            }
+        }
+        
+        return materials;
+    }
+    
+    /**
+     * @brief Creates a backup of all materials using Huffman compression.
+     * @return EncodedResult containing compressed backup data
+     */
+    public HuffmanCoding.EncodedResult createBackup() {
+        return compressMaterials();
+    }
+    
+    /**
+     * @brief Restores materials from a compressed backup.
+     * @param encoded The compressed backup data
+     * @param encodingTable The encoding table used for compression
+     * @return Number of materials restored
+     */
+    public int restoreFromBackup(String encoded, Map<Character, String> encodingTable) {
+        List<Material> restoredMaterials = decompressMaterials(encoded, encodingTable);
+        
+        // Clear existing materials and add restored ones
+        for (Material material : repository.getAll()) {
+            repository.remove(material.getId());
+        }
+        
+        for (Material material : restoredMaterials) {
+            repository.add(material);
+        }
+        
+        return restoredMaterials.size();
     }
 }
 

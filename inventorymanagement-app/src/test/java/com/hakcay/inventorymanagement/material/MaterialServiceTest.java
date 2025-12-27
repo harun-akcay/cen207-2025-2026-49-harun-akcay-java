@@ -341,5 +341,94 @@ public class MaterialServiceTest {
         assertEquals(1, results.size());
         assertEquals(material2, results.get(0));
     }
+    
+    @Test
+    public void testCompressMaterials() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        Material material2 = new Material(2, "Wood", "Wood", 50, 5.00);
+        service.addMaterial(material1);
+        service.addMaterial(material2);
+        
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult result = service.compressMaterials();
+        assertNotNull(result);
+        assertNotNull(result.getEncoded());
+        assertNotNull(result.getEncodingTable());
+    }
+    
+    @Test
+    public void testCompressEmptyMaterials() {
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult result = service.compressMaterials();
+        assertNotNull(result);
+        assertNotNull(result.getEncoded());
+        assertNotNull(result.getEncodingTable());
+    }
+    
+    @Test
+    public void testDecompressMaterials() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        Material material2 = new Material(2, "Wood", "Wood", 50, 5.00);
+        service.addMaterial(material1);
+        service.addMaterial(material2);
+        
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult compressed = service.compressMaterials();
+        List<Material> decompressed = service.decompressMaterials(
+            compressed.getEncoded(), 
+            compressed.getEncodingTable()
+        );
+        
+        assertEquals(2, decompressed.size());
+        assertEquals(material1.getId(), decompressed.get(0).getId());
+        assertEquals(material1.getName(), decompressed.get(0).getName());
+    }
+    
+    @Test
+    public void testDecompressNullEncoded() {
+        List<Material> decompressed = service.decompressMaterials(null, new java.util.HashMap<>());
+        assertTrue(decompressed.isEmpty());
+    }
+    
+    @Test
+    public void testDecompressNullTable() {
+        List<Material> decompressed = service.decompressMaterials("0101", null);
+        assertTrue(decompressed.isEmpty());
+    }
+    
+    @Test
+    public void testCreateBackup() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material1);
+        
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult backup = service.createBackup();
+        assertNotNull(backup);
+        assertNotNull(backup.getEncoded());
+        assertNotNull(backup.getEncodingTable());
+    }
+    
+    @Test
+    public void testRestoreFromBackup() {
+        Material material1 = new Material(1, "Steel", "Metal", 100, 10.50);
+        Material material2 = new Material(2, "Wood", "Wood", 50, 5.00);
+        service.addMaterial(material1);
+        service.addMaterial(material2);
+        
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult backup = service.createBackup();
+        
+        // Clear materials
+        service.removeMaterialById(1);
+        service.removeMaterialById(2);
+        assertEquals(0, service.getAllMaterials().size());
+        
+        // Restore from backup
+        int restored = service.restoreFromBackup(backup.getEncoded(), backup.getEncodingTable());
+        assertEquals(2, restored);
+        assertEquals(2, service.getAllMaterials().size());
+    }
+    
+    @Test
+    public void testRestoreFromBackupEmpty() {
+        com.hakcay.inventorymanagement.algorithms.huffman.HuffmanCoding.EncodedResult backup = service.compressMaterials();
+        int restored = service.restoreFromBackup(backup.getEncoded(), backup.getEncodingTable());
+        assertEquals(0, restored);
+    }
 }
 
