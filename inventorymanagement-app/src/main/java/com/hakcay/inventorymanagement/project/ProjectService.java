@@ -383,7 +383,13 @@ public class ProjectService {
      * @param id The project ID
      * @return The project, or null if not found
      */
-    private Project findProjectById(int id) {
+    /**
+     * Finds a project by its ID.
+     * 
+     * @param id the project ID
+     * @return the project if found, null otherwise
+     */
+    public Project findProjectById(int id) {
         for (Project project : projects) {
             if (project.getId() == id) {
                 return project;

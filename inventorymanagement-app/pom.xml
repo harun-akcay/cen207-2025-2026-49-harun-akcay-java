@@ -219,6 +219,30 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>regenerate-coveragereport-after-site</id>
+						<phase>site</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>reportgenerator</executable>
+							<arguments>
+								<argument>-reports:${project.reporting.outputDirectory}/jacoco/jacoco.xml</argument>
+								<argument>-sourcedirs:${project.basedir}/src/main/java</argument>
+								<argument>-targetdir:${project.reporting.outputDirectory}/coveragereport</argument>
+								<argument>-reporttypes:Html</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 <!--			<plugin>-->
 <!--				<groupId>org.jacoco</groupId>-->
 <!--				<artifactId>jacoco-maven-plugin</artifactId>-->

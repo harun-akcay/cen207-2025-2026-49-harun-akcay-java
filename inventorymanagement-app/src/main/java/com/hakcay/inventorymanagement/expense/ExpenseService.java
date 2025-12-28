@@ -76,6 +76,21 @@ public class ExpenseService {
     }
 
     /**
+     * Gets an expense by its ID.
+     *
+     * @param id the expense ID
+     * @return the expense if found, null otherwise
+     */
+    public Expense getExpenseById(int id) {
+        for (Expense expense : expenses) {
+            if (expense.getId() == id) {
+                return expense;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Calculates the total expense amount for a specific project.
      *
      * @param projectId the project id
