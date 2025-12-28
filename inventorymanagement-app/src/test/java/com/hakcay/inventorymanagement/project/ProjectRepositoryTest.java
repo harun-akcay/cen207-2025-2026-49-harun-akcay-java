@@ -235,14 +235,19 @@ public class ProjectRepositoryTest {
      */
     @Test
     public void testLoadAllWithCommasInFields() throws IOException {
-        java.io.FileWriter writer = new java.io.FileWriter(tempFile);
-        writer.write("1,Project, with, commas,Goal, with, commas,Status, with, commas\n");
-        writer.close();
+        // Use FileOperations to write the file (to match the read mechanism)
+        com.hakcay.inventorymanagement.algorithms.fileops.FileOperations.safeWrite(
+            tempFile.getAbsolutePath(), 
+            "1,Project|COMMA| with|COMMA| commas,Goal|COMMA| with|COMMA| commas,Status|COMMA| with|COMMA| commas"
+        );
         
         List<Project> projects = repository.loadAll();
         assertEquals(1, projects.size());
-        // The commas should be preserved (though CSV parsing will split them)
-        // This tests the escape/restore mechanism
+        // The commas should be preserved through escape/restore mechanism
+        Project project = projects.get(0);
+        assertTrue("Project name should contain commas", project.getName().contains(","));
+        assertTrue("Project goal should contain commas", project.getGoal().contains(","));
+        assertTrue("Project status should contain commas", project.getStatus().contains(","));
     }
 
     /**
