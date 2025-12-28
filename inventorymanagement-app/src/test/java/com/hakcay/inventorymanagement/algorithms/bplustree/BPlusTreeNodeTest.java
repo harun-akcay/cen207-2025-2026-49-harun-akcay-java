@@ -27,8 +27,8 @@ public class BPlusTreeNodeTest {
         leafNode.addKeyValue(2, "Two");
         
         assertEquals(2, leafNode.getKeyCount());
-        assertEquals("One", leafNode.getValue(1));
-        assertEquals("Two", leafNode.getValue(2));
+        assertEquals("One", leafNode.getValue(Integer.valueOf(1)));
+        assertEquals("Two", leafNode.getValue(Integer.valueOf(2)));
     }
     
     @Test
@@ -56,7 +56,7 @@ public class BPlusTreeNodeTest {
         String removed = leafNode.removeKeyValue(1);
         assertEquals("One", removed);
         assertEquals(1, leafNode.getKeyCount());
-        assertNull(leafNode.getValue(1));
+        assertNull(leafNode.getValue(Integer.valueOf(1)));
     }
     
     @Test
@@ -69,8 +69,8 @@ public class BPlusTreeNodeTest {
     @Test
     public void testGetValue() {
         leafNode.addKeyValue(1, "One");
-        assertEquals("One", leafNode.getValue(1));
-        assertNull(leafNode.getValue(999));
+        assertEquals("One", leafNode.getValue(Integer.valueOf(1)));
+        assertNull(leafNode.getValue(Integer.valueOf(999)));
     }
     
     @Test

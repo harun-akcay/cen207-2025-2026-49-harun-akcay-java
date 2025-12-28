@@ -226,16 +226,16 @@
 				<executions>
 					<execution>
 						<id>regenerate-coveragereport-after-site</id>
-						<phase>site</phase>
+						<phase>post-site</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
 						<configuration>
 							<executable>reportgenerator</executable>
 							<arguments>
-								<argument>-reports:${project.reporting.outputDirectory}/jacoco/jacoco.xml</argument>
-								<argument>-sourcedirs:${project.basedir}/src/main/java</argument>
-								<argument>-targetdir:${project.reporting.outputDirectory}/coveragereport</argument>
+								<argument>-reports:target/site/jacoco/jacoco.xml</argument>
+								<argument>-sourcedirs:src/main/java</argument>
+								<argument>-targetdir:target/site/coveragereport</argument>
 								<argument>-reporttypes:Html</argument>
 							</arguments>
 						</configuration>

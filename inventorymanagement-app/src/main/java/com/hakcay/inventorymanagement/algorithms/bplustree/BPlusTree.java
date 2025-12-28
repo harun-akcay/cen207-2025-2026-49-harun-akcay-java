@@ -179,11 +179,27 @@ public class BPlusTree<K extends Comparable<K>, V> {
         
         while (!current.isLeaf()) {
             List<K> keys = current.getKeys();
+            List<BPlusTreeNode<K, V>> children = current.getChildren();
+            
+            if (children.isEmpty()) {
+                // Should not happen, but handle gracefully
+                break;
+            }
+            
+            // In B+ tree internal nodes: children[0] -> keys[0] -> children[1] -> keys[1] -> ...
+            // If key <= keys[i], go to children[i]
+            // If key > keys[i], go to children[i+1]
             int index = 0;
-            while (index < keys.size() && keys.get(index).compareTo(key) <= 0) {
+            while (index < keys.size() && key.compareTo(keys.get(index)) > 0) {
                 index++;
             }
-            current = current.getChild(index);
+            
+            if (index < children.size()) {
+                current = children.get(index);
+            } else {
+                // Should not happen, but handle gracefully
+                break;
+            }
         }
         
         return current;
@@ -225,11 +241,12 @@ public class BPlusTree<K extends Comparable<K>, V> {
         if (leaf.getParent() == null) {
             // Create new root
             BPlusTreeNode<K, V> newRoot = new BPlusTreeNode<>(false, maxKeys);
-            newRoot.addKeyChild(splitKey, leaf);
+            newRoot.addFirstChild(leaf);
             newRoot.addKeyChild(splitKey, newLeaf);
             root = newRoot;
             leaf.setParent(root);
             newLeaf.setParent(root);
+            // firstLeaf remains the same (leftmost leaf) - leaf is still the first leaf
         } else {
             BPlusTreeNode<K, V> parent = leaf.getParent();
             parent.addKeyChild(splitKey, newLeaf);
@@ -271,7 +288,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
         if (node.getParent() == null) {
             // Create new root
             BPlusTreeNode<K, V> newRoot = new BPlusTreeNode<>(false, maxKeys);
-            newRoot.addKeyChild(splitKey, node);
+            newRoot.addFirstChild(node);
             newRoot.addKeyChild(splitKey, newNode);
             root = newRoot;
             node.setParent(root);

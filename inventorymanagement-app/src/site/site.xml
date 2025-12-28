@@ -65,8 +65,8 @@
 		</menu>
 
 		<menu name="Test Coverage">
-				<item name="JaCoCo Report" href="./jacoco/index.html" />
-				<item name="Report Generator" href="./coveragereport/index.html" />
+				<item name="JaCoCo Report" href="jacoco/index.html" />
+				<item name="Report Generator" href="coveragereport/index.html" />
 				<!-- Add more items for other HTML pages if needed -->
 		</menu>
 		
