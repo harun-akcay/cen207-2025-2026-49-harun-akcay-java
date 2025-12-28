@@ -1,15 +1,11 @@
 package com.hakcay.inventorymanagement.project;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.hakcay.inventorymanagement.algorithms.bplustree.BPlusTree;
+import com.hakcay.inventorymanagement.algorithms.fileops.FileOperations;
 import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
 
 /**
@@ -17,6 +13,7 @@ import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
  * Handles reading from and writing to projects.csv file.
  * Uses HashTable for O(1) lookup performance.
  * Uses B+ Tree for ordered indexing and file indexing.
+ * Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class ProjectRepository {
     private static final String DEFAULT_CSV_FILE = "projects.csv";
@@ -54,6 +51,7 @@ public class ProjectRepository {
      * Loads all projects from the CSV file.
      * Returns an empty list if the file doesn't exist or is empty.
      * Also populates the HashTable for O(1) lookup.
+     * Uses FileOperations for safe file reading.
      *
      * @return list of all projects
      */
@@ -68,25 +66,27 @@ public class ProjectRepository {
             return projects;
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                // Skip empty lines
-                if (line.isEmpty()) {
-                    continue;
-                }
+        // Use FileOperations for safe reading
+        String content = FileOperations.safeRead(csvFile);
+        if (content == null || content.isEmpty()) {
+            return projects;
+        }
 
-                Project project = parseProject(line);
-                if (project != null) {
-                    projects.add(project);
-                    projectMap.put(project.getId(), project); // Add to HashTable
-                    projectIndex.insert(project.getId(), project); // Add to B+ Tree
-                }
+        // Parse content line by line
+        String[] lines = content.split("\n");
+        for (String line : lines) {
+            line = line.trim();
+            // Skip empty lines
+            if (line.isEmpty()) {
+                continue;
             }
-        } catch (IOException e) {
-            // Return empty list on error
-            return new ArrayList<>();
+
+            Project project = parseProject(line);
+            if (project != null) {
+                projects.add(project);
+                projectMap.put(project.getId(), project); // Add to HashTable
+                projectIndex.insert(project.getId(), project); // Add to B+ Tree
+            }
         }
 
         return projects;
@@ -96,6 +96,7 @@ public class ProjectRepository {
      * Saves all projects to the CSV file.
      * Overwrites the existing file with the new data.
      * Also updates the HashTable to keep it in sync.
+     * Uses FileOperations for atomic write and hash-based integrity checking.
      *
      * @param projects the list of projects to save
      */
@@ -114,19 +115,24 @@ public class ProjectRepository {
             }
         }
 
-        File file = new File(csvFile);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Project project : projects) {
-                if (project != null) { // Skip null projects
-                    String line = formatProject(project);
-                    writer.write(line);
-                    writer.newLine();
-                }
+        // Build CSV content
+        StringBuilder content = new StringBuilder();
+        for (Project project : projects) {
+            if (project != null) { // Skip null projects
+                String line = formatProject(project);
+                content.append(line);
+                content.append('\n');
             }
-        } catch (IOException e) {
-            // Silently handle IO errors
-            // In a production system, you might want to log this
         }
+
+        // Remove trailing newline
+        String contentStr = content.toString();
+        if (contentStr.endsWith("\n")) {
+            contentStr = contentStr.substring(0, contentStr.length() - 1);
+        }
+
+        // Use FileOperations for atomic write with integrity checking
+        FileOperations.safeWrite(csvFile, contentStr);
     }
 
     /**

@@ -1,17 +1,15 @@
 package com.hakcay.inventorymanagement.expense;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.hakcay.inventorymanagement.algorithms.fileops.FileOperations;
 
 /**
  * Repository class for persisting Expense objects to a CSV file.
  * Handles reading from and writing to expenses.csv file.
+ * Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class ExpenseRepository {
     private static final String DEFAULT_CSV_FILE = "expenses.csv";
@@ -38,6 +36,7 @@ public class ExpenseRepository {
     /**
      * Loads all expenses from the CSV file.
      * Returns an empty list if the file doesn't exist or is empty.
+     * Uses FileOperations for safe file reading.
      *
      * @return list of all expenses
      */
@@ -50,23 +49,25 @@ public class ExpenseRepository {
             return expenses;
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                // Skip empty lines
-                if (line.isEmpty()) {
-                    continue;
-                }
+        // Use FileOperations for safe reading
+        String content = FileOperations.safeRead(csvFile);
+        if (content == null || content.isEmpty()) {
+            return expenses;
+        }
 
-                Expense expense = parseExpense(line);
-                if (expense != null) {
-                    expenses.add(expense);
-                }
+        // Parse content line by line
+        String[] lines = content.split("\n");
+        for (String line : lines) {
+            line = line.trim();
+            // Skip empty lines
+            if (line.isEmpty()) {
+                continue;
             }
-        } catch (IOException e) {
-            // Return empty list on error
-            return new ArrayList<>();
+
+            Expense expense = parseExpense(line);
+            if (expense != null) {
+                expenses.add(expense);
+            }
         }
 
         return expenses;
@@ -75,6 +76,7 @@ public class ExpenseRepository {
     /**
      * Saves all expenses to the CSV file.
      * Overwrites the existing file with the new data.
+     * Uses FileOperations for atomic write and hash-based integrity checking.
      *
      * @param expenses the list of expenses to save
      */
@@ -83,17 +85,24 @@ public class ExpenseRepository {
             expenses = new ArrayList<>();
         }
 
-        File file = new File(csvFile);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Expense expense : expenses) {
+        // Build CSV content
+        StringBuilder content = new StringBuilder();
+        for (Expense expense : expenses) {
+            if (expense != null) {
                 String line = formatExpense(expense);
-                writer.write(line);
-                writer.newLine();
+                content.append(line);
+                content.append('\n');
             }
-        } catch (IOException e) {
-            // Silently handle IO errors
-            // In a production system, you might want to log this
         }
+
+        // Remove trailing newline
+        String contentStr = content.toString();
+        if (contentStr.endsWith("\n")) {
+            contentStr = contentStr.substring(0, contentStr.length() - 1);
+        }
+
+        // Use FileOperations for atomic write with integrity checking
+        FileOperations.safeWrite(csvFile, contentStr);
     }
 
     /**
