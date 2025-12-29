@@ -42,18 +42,18 @@ public class KMPAlgorithm {
             if (text.charAt(textIndex) == pattern.charAt(patternIndex)) {
                 textIndex++;
                 patternIndex++;
+            } else {
+                if (patternIndex != 0) {
+                    patternIndex = lps[patternIndex - 1];
+                } else {
+                    textIndex++;
+                }
             }
             
             if (patternIndex == pattern.length()) {
                 // Pattern found
                 occurrences.add(textIndex - patternIndex);
                 patternIndex = lps[patternIndex - 1];
-            } else if (textIndex < text.length() && text.charAt(textIndex) != pattern.charAt(patternIndex)) {
-                if (patternIndex != 0) {
-                    patternIndex = lps[patternIndex - 1];
-                } else {
-                    textIndex++;
-                }
             }
         }
         

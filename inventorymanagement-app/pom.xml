@@ -207,6 +207,16 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>report-site</id>
+						<phase>site</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
 						<id>check</id>
 						<phase>verify</phase>
 						<goals>
@@ -278,6 +288,7 @@
 								<argument>-targetdir:target/site/coveragereport</argument>
 								<argument>-reporttypes:Html</argument>
 							</arguments>
+							<skip>${skipTests}</skip>
 						</configuration>
 					</execution>
 				</executions>
@@ -379,6 +390,11 @@
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>3.1.0</version>
+					<configuration>
+						<excludeDefaultDirectories>false</excludeDefaultDirectories>
+						<retryOnError>true</retryOnError>
+						<followSymlinks>false</followSymlinks>
+					</configuration>
 				</plugin>
 				<!-- default lifecycle, jar packaging: see
 				https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
