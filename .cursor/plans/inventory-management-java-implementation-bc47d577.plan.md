@@ -165,6 +165,6 @@
 - [x] B+ Tree algoritmasını implement et ve file indexing için entegre et
 - [x] File Operations algoritmasını implement et ve persistent storage için entegre et
 - [x] InventorymanagementApp main method ve console menu implement et
-- [ ] Sales Tracker modülünü implement et: Sale model, SaleService ve testleri
+- [x] Sales Tracker modülünü implement et: Sale model, SaleService ve testleri
 - [ ] Jacoco coverage check konfigürasyonunu aktif et ve %100 coverage hedefi ayarla
 - [ ] Tüm sınıflar için Javadoc dokümantasyonu ekle (%100 coverage)

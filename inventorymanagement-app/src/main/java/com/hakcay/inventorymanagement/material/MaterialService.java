@@ -85,6 +85,11 @@ public class MaterialService {
     public void updateMaterial(Material material) {
         if (material != null) {
             Material existing = repository.findById(material.getId());
+            if (existing == null) {
+                // Material doesn't exist, add it instead
+                addMaterial(material);
+                return;
+            }
             MaterialAction action = new MaterialAction(
                 MaterialAction.ActionType.UPDATE,
                 existing, // Material before update

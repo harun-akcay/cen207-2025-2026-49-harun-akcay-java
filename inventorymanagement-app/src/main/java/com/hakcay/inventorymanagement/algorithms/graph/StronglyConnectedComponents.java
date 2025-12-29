@@ -60,7 +60,7 @@ public class StronglyConnectedComponents {
     }
     
     /**
-     * @brief Checks if the graph has any cycles (SCCs with more than one vertex).
+     * @brief Checks if the graph has any cycles (SCCs with more than one vertex or self loops).
      * @param <T> The type of vertices
      * @param graph The directed graph
      * @return true if cycles exist, false otherwise
@@ -68,6 +68,13 @@ public class StronglyConnectedComponents {
     public static <T> boolean hasCycle(Graph<T> graph) {
         if (graph == null || graph.isEmpty()) {
             return false;
+        }
+        
+        // Check for self loops first
+        for (T vertex : graph.getVertices()) {
+            if (graph.getNeighbors(vertex).contains(vertex)) {
+                return true;
+            }
         }
         
         List<List<T>> components = findSCC(graph);
@@ -111,6 +118,11 @@ public class StronglyConnectedComponents {
     public static <T> boolean isInCycle(Graph<T> graph, T vertex) {
         if (graph == null || vertex == null || graph.isEmpty()) {
             return false;
+        }
+        
+        // Check for self loop
+        if (graph.getNeighbors(vertex).contains(vertex)) {
+            return true;
         }
         
         List<List<T>> components = findSCC(graph);

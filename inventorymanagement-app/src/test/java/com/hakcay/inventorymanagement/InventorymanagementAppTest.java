@@ -278,7 +278,7 @@ public class InventorymanagementAppTest {
 
   /**
    * @brief Test MaterialRepository update with non-existent material.
-   * @details This test verifies update returns false for non-existent material.
+   * @details This test verifies update adds the material if it doesn't exist.
    */
   @Test
   public void testMaterialRepositoryUpdateNonExistent() {
@@ -288,8 +288,9 @@ public class InventorymanagementAppTest {
     Material nonExistent = new Material(999, "NonExistent", "Type", 10, 5.50);
     service.updateMaterial(nonExistent);
     
-    // Should still be empty
-    assertEquals(0, service.getAllMaterials().size());
+    // Material should be added to repository
+    assertEquals(1, service.getAllMaterials().size());
+    assertNotNull(service.getMaterialById(999));
   }
 
   /**

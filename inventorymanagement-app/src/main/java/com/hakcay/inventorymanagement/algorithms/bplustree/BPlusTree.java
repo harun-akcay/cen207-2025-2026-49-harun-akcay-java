@@ -142,7 +142,7 @@ public class BPlusTree<K extends Comparable<K>, V> {
      * @return true if empty, false otherwise
      */
     public boolean isEmpty() {
-        return root.getKeyCount() == 0;
+        return size() == 0;
     }
     
     /**
@@ -187,10 +187,11 @@ public class BPlusTree<K extends Comparable<K>, V> {
             }
             
             // In B+ tree internal nodes: children[0] -> keys[0] -> children[1] -> keys[1] -> ...
-            // If key <= keys[i], go to children[i]
-            // If key > keys[i], go to children[i+1]
+            // If key < keys[i], go to children[i]
+            // If key >= keys[i], go to children[i+1]
+            // So we increment index while key >= keys[index]
             int index = 0;
-            while (index < keys.size() && key.compareTo(keys.get(index)) > 0) {
+            while (index < keys.size() && key.compareTo(keys.get(index)) >= 0) {
                 index++;
             }
             
@@ -273,12 +274,15 @@ public class BPlusTree<K extends Comparable<K>, V> {
         List<K> keys = node.getKeys();
         List<BPlusTreeNode<K, V>> children = node.getChildren();
         
+        // Add first child to newNode (the child right after splitKey)
+        newNode.addFirstChild(children.get(mid + 1));
+        
+        // Move remaining keys and children to newNode
         for (int i = mid + 1; i < keys.size(); i++) {
             newNode.addKeyChild(keys.get(i), children.get(i + 1));
         }
-        newNode.addKeyChild(splitKey, children.get(mid + 1));
         
-        // Remove moved keys from original node
+        // Remove moved keys and children from original node (including splitKey)
         for (int i = keys.size() - 1; i >= mid; i--) {
             keys.remove(i);
             children.remove(i + 1);
