@@ -70,10 +70,10 @@
 				<!-- Add more items for other HTML pages if needed -->
 		</menu>
 		
-				<menu name="Document Coverage">
-				<item name="Doxygen Report" href="./doxygen/html/index.html" />
-				<item name="Coverxygen Report" href="./coverxygen/index.html" />
-				<!-- Add more items for other HTML pages if needed -->
+		<menu name="Document Coverage">
+			<item name="Doxygen Report" href="doxygen/html/index.html" />
+			<item name="Coverxygen Report" href="coverxygen/index.html" />
+			<!-- Add more items for other HTML pages if needed -->
 		</menu>
 
 		<footer><![CDATA[All rights reserved.]]></footer>

@@ -1,8 +1,8 @@
-# eclipse-java-maven-template
+# Inventory Management Application
 
 # Overview
 
-You will generate eclipse maven project with Junit4 from CLI and. Also you will generate jar and then you will run your application. For more information you can check examples [Maven – Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) and [TheNEXUS | A Community Project](https://books.sonatype.com/mvnref-book/reference/index.html)
+This is an Inventory Management Application developed as a Java Maven project with JUnit4. The application provides comprehensive functionality for managing materials, projects, and expenses with advanced data structures and algorithms implementation including B+ Trees, Hash Tables, Huffman Coding, KMP Algorithm, Graph algorithms (BFS, DFS, Strongly Connected Components), and file operations with atomic writes and integrity checks. You will generate jar and then you will run your application. For more information you can check examples [Maven – Maven in 5 Minutes](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html) and [TheNEXUS | A Community Project](https://books.sonatype.com/mvnref-book/reference/index.html)
 
 ## Releases
 
@@ -710,21 +710,37 @@ public class InventorymanagementAppTest {
     <scm>
         <url>https://github.com/ucoruh/eclipse-java-maven-template</url>
     </scm>
-    <inceptionYear>2023</inceptionYear>
+    <inceptionYear>2025</inceptionYear>
     <developers>
         <developer>
-            <name>Asst. Prof. Dr. Ugur CORUH</name>
+            <name>Harun Akcay</name>
             <organization>RTEU</organization>
-            <email>ugur.coruh@erdogan.edu.tr</email>
+            <email>harun_akcay23@erdogan.edu.tr</email>
             <roles>
                 <role>Developer</role>
                 <role>Designer</role>
             </roles>
         </developer>
         <developer>
-            <name>Other Person</name>
+            <name>Sudenaz Orhan</name>
             <organization>RTEU</organization>
-            <email>mail@gmail.com</email>
+            <email>sudenaz_orhan23@erdogan.edu.tr</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Zumre Uykun</name>
+            <organization>RTEU</organization>
+            <email>zumre_uykun23@erdogan.edu.tr</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Guler Dinc</name>
+            <organization>RTEU</organization>
+            <email>guler_dinc23@erdogan.edu.tr</email>
             <roles>
                 <role>Developer</role>
             </roles>
@@ -732,8 +748,8 @@ public class InventorymanagementAppTest {
     </developers>
     <contributors>
         <contributor>
-            <name>Asst. Prof. Dr. Ugur CORUH</name>
-            <email>ugur.coruh@erdogan.edu.tr</email>
+            <name>Harun Akcay</name>
+            <email>harun_akcay23@erdogan.edu.tr</email>
             <organization>RTEU</organization>
             <roles>
                 <role>Developer</role>
@@ -741,15 +757,31 @@ public class InventorymanagementAppTest {
             </roles>
         </contributor>
         <contributor>
-            <name>Other Person</name>
+            <name>Sudenaz Orhan</name>
             <organization>RTEU</organization>
-            <email>mail@gmail.com</email>
+            <email>sudenaz_orhan23@erdogan.com.tr</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Zumre Uykun</name>
+            <organization>RTEU</organization>
+            <email>zumre_uykun23@erdogan.com.tr</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Guler Dinc</name>
+            <organization>RTEU</organization>
+            <email>guler_dinc23@erdogan.com.tr</email>
             <roles>
                 <role>Developer</role>
             </roles>
         </contributor>
     </contributors>
-    <description>Maven Example Template Project</description>
+    <description>Inventory Management Application - A comprehensive Java application for managing materials, projects, and expenses with advanced data structures and algorithms</description>
     <organization>
         <name>Recep Tayyip Erdogan University</name>
         <url>www.erdogan.edu.tr</url>
