@@ -474,5 +474,137 @@ public class HashTableTest {
         hashTable.clear();
         assertEquals(0, hashTable.size());
     }
+    
+    @Test
+    public void testLoadFactorExactlyOne() {
+        // Test with load factor = 1.0 (boundary case)
+        HashTable<String, Integer> table = new HashTable<>(4, 1.0);
+        
+        // Add 4 elements (4/4 = 1.0, should trigger resize)
+        table.put("key1", 1);
+        table.put("key2", 2);
+        table.put("key3", 3);
+        table.put("key4", 4);
+        
+        // Verify all elements are accessible
+        assertEquals(4, table.size());
+        assertEquals(Integer.valueOf(1), table.get("key1"));
+        assertEquals(Integer.valueOf(2), table.get("key2"));
+        assertEquals(Integer.valueOf(3), table.get("key3"));
+        assertEquals(Integer.valueOf(4), table.get("key4"));
+    }
+    
+    @Test
+    public void testLoadFactorVerySmall() {
+        // Test with very small load factor
+        HashTable<String, Integer> table = new HashTable<>(4, 0.25);
+        
+        // Add 1 element (1/4 = 0.25, should trigger resize)
+        table.put("key1", 1);
+        
+        // Verify element is accessible
+        assertEquals(1, table.size());
+        assertEquals(Integer.valueOf(1), table.get("key1"));
+    }
+    
+    @Test
+    public void testResizeWithEmptyBuckets() {
+        // Create table and add elements, then remove some to create empty buckets
+        HashTable<String, Integer> table = new HashTable<>(4, 0.75);
+        
+        table.put("key1", 1);
+        table.put("key2", 2);
+        table.put("key3", 3);
+        
+        // Remove one element
+        table.remove("key2");
+        
+        // Add more to trigger resize with some empty buckets
+        table.put("key4", 4);
+        table.put("key5", 5);
+        
+        // Verify all elements are accessible after resize
+        assertEquals(4, table.size());
+        assertEquals(Integer.valueOf(1), table.get("key1"));
+        assertEquals(Integer.valueOf(3), table.get("key3"));
+        assertEquals(Integer.valueOf(4), table.get("key4"));
+        assertEquals(Integer.valueOf(5), table.get("key5"));
+    }
+    
+    @Test
+    public void testHashWithNullKey() {
+        // Test that hash method handles null (indirectly through get/remove)
+        // Since hash is private, we test through get and remove which call it
+        assertNull(hashTable.get(null));
+        assertNull(hashTable.remove(null));
+        assertFalse(hashTable.containsKey(null));
+    }
+    
+    @Test
+    public void testPutWithoutResize() {
+        // Test put when resize is NOT needed
+        HashTable<String, Integer> table = new HashTable<>(16, 0.75);
+        
+        // Add 11 elements (11/16 = 0.6875 < 0.75, should NOT trigger resize)
+        for (int i = 0; i < 11; i++) {
+            table.put("key" + i, i);
+        }
+        
+        assertEquals(11, table.size());
+        for (int i = 0; i < 11; i++) {
+            assertEquals(Integer.valueOf(i), table.get("key" + i));
+        }
+    }
+    
+    @Test
+    public void testResizeWithSingleBucketChain() {
+        // Create table that will have all elements in one bucket after resize
+        HashTable<String, Integer> table = new HashTable<>(2, 0.75);
+        
+        // Add elements that might hash to same bucket
+        table.put("a", 1);
+        table.put("b", 2);
+        
+        // Trigger resize
+        table.put("c", 3);
+        
+        // Verify all elements accessible
+        assertEquals(3, table.size());
+        assertEquals(Integer.valueOf(1), table.get("a"));
+        assertEquals(Integer.valueOf(2), table.get("b"));
+        assertEquals(Integer.valueOf(3), table.get("c"));
+    }
+    
+    @Test
+    public void testPutUpdateExistingAfterResize() {
+        // Add elements, trigger resize, then update existing key
+        HashTable<String, Integer> table = new HashTable<>(4, 0.75);
+        
+        table.put("key1", 1);
+        table.put("key2", 2);
+        table.put("key3", 3); // Triggers resize
+        
+        // Update existing key after resize
+        Integer oldValue = table.put("key1", 10);
+        assertEquals(Integer.valueOf(1), oldValue);
+        assertEquals(Integer.valueOf(10), table.get("key1"));
+        assertEquals(3, table.size());
+    }
+    
+    @Test
+    public void testRemoveAfterResize() {
+        // Add elements, trigger resize, then remove
+        HashTable<String, Integer> table = new HashTable<>(4, 0.75);
+        
+        table.put("key1", 1);
+        table.put("key2", 2);
+        table.put("key3", 3); // Triggers resize
+        
+        // Remove element after resize
+        Integer removed = table.remove("key2");
+        assertEquals(Integer.valueOf(2), removed);
+        assertEquals(2, table.size());
+        assertNull(table.get("key2"));
+    }
 }
 

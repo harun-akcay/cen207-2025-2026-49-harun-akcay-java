@@ -737,5 +737,150 @@ public class ProjectServiceTest {
         List<Project> results = service.searchProjectsByGoal("Mobile");
         assertTrue(results.isEmpty());
     }
+    
+    @Test
+    public void testGetDependenciesBFSWithNoDependencies() {
+        // Test when project has no dependencies (empty list after remove(0))
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        List<Integer> dependencies = service.getDependenciesBFS(1);
+        assertTrue(dependencies.isEmpty());
+    }
+    
+    @Test
+    public void testGetDependenciesDFSWithNoDependencies() {
+        // Test when project has no dependencies (empty list after remove(0))
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        List<Integer> dependencies = service.getDependenciesDFS(1);
+        assertTrue(dependencies.isEmpty());
+    }
+    
+    @Test
+    public void testGetDependentsBFSWithNoDependents() {
+        // Test when project has no dependents (empty list after remove(0))
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        List<Integer> dependents = service.getDependentsBFS(1);
+        assertTrue(dependents.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsWithGoalMatch() {
+        // Test !matches && project.getGoal() != null branch
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        // Search for "Build" - should match goal, not name
+        List<Project> results = service.searchProjects("Build");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchProjectsByNameWithNullName() {
+        Project project1 = new Project(1, null, "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByName("Website");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testSearchProjectsByGoalWithNullGoal() {
+        Project project1 = new Project(1, "Website", null, "PLANNED");
+        service.addProject(project1);
+        
+        List<Project> results = service.searchProjectsByGoal("Build");
+        assertTrue(results.isEmpty());
+    }
+    
+    @Test
+    public void testAddDependencySafeWithCycle() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        service.addDependency(1, 2);
+        
+        // Try to add dependency that creates cycle
+        try {
+            service.addDependencySafe(2, 1);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("cycle"));
+        }
+    }
+    
+    @Test
+    public void testAddDependencySafeWithoutCycle() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        Project project2 = new Project(2, "Project 2", "Goal 2", "PLANNED");
+        service.addProject(project1);
+        service.addProject(project2);
+        
+        // Should not throw exception
+        service.addDependencySafe(1, 2);
+        assertTrue(service.hasDependencyPath(1, 2));
+    }
+    
+    @Test
+    public void testIsProjectInCycleWithNonExistentProject() {
+        // Test findProjectById == null branch
+        assertFalse(service.isProjectInCycle(999));
+    }
+    
+    @Test
+    public void testAddDependencySafeWithNonExistentFromProject() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        try {
+            service.addDependencySafe(999, 1);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("not found"));
+        }
+    }
+    
+    @Test
+    public void testAddDependencySafeWithNonExistentToProject() {
+        Project project1 = new Project(1, "Project 1", "Goal 1", "PLANNED");
+        service.addProject(project1);
+        
+        try {
+            service.addDependencySafe(1, 999);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("not found"));
+        }
+    }
+    
+    @Test
+    public void testSearchProjectsWithNameMatch() {
+        // Test matches == true branch (name match)
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        // Search for "Website" - should match name
+        List<Project> results = service.searchProjects("Website");
+        assertEquals(1, results.size());
+        assertEquals(project1, results.get(0));
+    }
+    
+    @Test
+    public void testSearchProjectsWithNameMatchThenGoalMatch() {
+        // Test matches == true from name, so goal check is skipped
+        Project project1 = new Project(1, "Website", "Build website", "PLANNED");
+        service.addProject(project1);
+        
+        // Search for "Website" - matches name, goal check should be skipped
+        List<Project> results = service.searchProjects("Website");
+        assertEquals(1, results.size());
+    }
 }
 
