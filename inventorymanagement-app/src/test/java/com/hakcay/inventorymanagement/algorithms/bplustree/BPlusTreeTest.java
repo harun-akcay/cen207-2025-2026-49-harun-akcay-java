@@ -290,5 +290,84 @@ public class BPlusTreeTest {
         assertEquals("Value3", tree.search(3));
         assertEquals("Value5", tree.search(5));
     }
+    
+    @Test
+    public void testDeleteRootLeaf() {
+        // Delete from root leaf (single node tree)
+        tree.insert(1, "One");
+        tree.delete(1);
+        
+        assertTrue(tree.isEmpty());
+        assertEquals(0, tree.size());
+    }
+    
+    @Test
+    public void testMultipleInternalSplits() {
+        // Create tree with maxKeys=2 to trigger multiple internal splits
+        BPlusTree<Integer, String> smallTree = new BPlusTree<>(2);
+        
+        // Insert enough items to trigger multiple internal node splits
+        for (int i = 1; i <= 15; i++) {
+            smallTree.insert(i, "Value" + i);
+        }
+        
+        assertEquals(15, smallTree.size());
+        for (int i = 1; i <= 15; i++) {
+            assertEquals("Value" + i, smallTree.search(i));
+        }
+    }
+    
+    @Test
+    public void testFindLeafWithEmptyChildren() {
+        // This tests the edge case in findLeaf where children.isEmpty()
+        // This is hard to trigger directly, but we can test with a complex tree structure
+        BPlusTree<Integer, String> testTree = new BPlusTree<>(2);
+        
+        // Insert items to create a complex tree structure
+        for (int i = 1; i <= 10; i++) {
+            testTree.insert(i, "Value" + i);
+        }
+        
+        // All searches should still work
+        for (int i = 1; i <= 10; i++) {
+            assertNotNull("Should find value for key " + i, testTree.search(i));
+        }
+    }
+    
+    @Test
+    public void testSplitInternalCreatesNewRoot() {
+        // Create tree with maxKeys=2 to easily trigger internal splits
+        BPlusTree<Integer, String> smallTree = new BPlusTree<>(2);
+        
+        // Insert enough to trigger internal node split that creates new root
+        for (int i = 1; i <= 8; i++) {
+            smallTree.insert(i, "Value" + i);
+        }
+        
+        assertEquals(8, smallTree.size());
+        // Verify all values are still accessible
+        for (int i = 1; i <= 8; i++) {
+            assertEquals("Value" + i, smallTree.search(i));
+        }
+    }
+    
+    @Test
+    public void testRecursiveInternalSplit() {
+        // Create tree with maxKeys=2 to trigger recursive internal splits
+        BPlusTree<Integer, String> smallTree = new BPlusTree<>(2);
+        
+        // Insert enough items to trigger recursive internal node splits
+        for (int i = 1; i <= 20; i++) {
+            smallTree.insert(i, "Value" + i);
+        }
+        
+        assertEquals(20, smallTree.size());
+        // Verify ordered traversal still works
+        List<String> values = smallTree.getAllValues();
+        assertEquals(20, values.size());
+        for (int i = 0; i < 20; i++) {
+            assertEquals("Value" + (i + 1), values.get(i));
+        }
+    }
 }
 

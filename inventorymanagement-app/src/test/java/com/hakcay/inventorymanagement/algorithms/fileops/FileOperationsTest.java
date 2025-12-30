@@ -383,5 +383,124 @@ public class FileOperationsTest {
         String readHash = FileOperations.calculateFileHash(TEST_FILE);
         assertEquals("Read hash should match write hash", writeHash, readHash);
     }
+    
+    @Test
+    public void testCalculateFileHash_Directory() throws IOException {
+        // Create a directory
+        File dir = new File(TEST_DIR + File.separator + "subdir");
+        dir.mkdirs();
+        
+        String hash = FileOperations.calculateFileHash(dir.getAbsolutePath());
+        
+        assertNull("Hash should be null for directory", hash);
+    }
+    
+    @Test
+    public void testSafeRead_Directory() throws IOException {
+        // Create a directory
+        File dir = new File(TEST_DIR + File.separator + "subdir2");
+        dir.mkdirs();
+        
+        String content = FileOperations.safeRead(dir.getAbsolutePath());
+        
+        assertNull("Content should be null for directory", content);
+    }
+    
+    @Test
+    public void testSafeWrite_HashMismatch() throws IOException {
+        // Create a file that will cause hash mismatch
+        // This is hard to simulate directly, but we can test the branch where
+        // contentHash or fileHash is null
+        String hash = FileOperations.safeWrite(TEST_FILE, TEST_CONTENT);
+        
+        // If write succeeds, hash should not be null
+        // The hash mismatch scenario is hard to test without mocking
+        // But we can test that safeWrite handles null hashes correctly
+        assertNotNull("Hash should not be null for valid write", hash);
+    }
+    
+    @Test
+    public void testAtomicWrite_NoBackupForNewFile() {
+        // Write to a new file (no backup should be created)
+        boolean success = FileOperations.atomicWrite(TEST_FILE, TEST_CONTENT);
+        
+        assertTrue("Atomic write should succeed", success);
+        assertFalse("Backup should not exist for new file", 
+                    FileOperations.backupExists(TEST_FILE));
+    }
+    
+    @Test
+    public void testAtomicWrite_BackupCleanup() throws IOException {
+        // Create initial file
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        
+        // Perform atomic write
+        boolean success = FileOperations.atomicWrite(TEST_FILE, TEST_CONTENT_2);
+        
+        assertTrue("Atomic write should succeed", success);
+        
+        // Backup should be cleaned up after successful write
+        assertFalse("Backup should be deleted after successful write", 
+                    FileOperations.backupExists(TEST_FILE));
+    }
+    
+    @Test
+    public void testBytesToHex_SingleCharHex() {
+        // Test bytesToHex with bytes that produce single-character hex
+        // Byte value 0x0A should produce "0a" (not "a")
+        byte[] bytes = new byte[] { 0x0A, 0x0B, 0x0C };
+        String hash = FileOperations.calculateContentHash(new String(bytes));
+        
+        // The hash should be properly formatted with leading zeros
+        assertNotNull("Hash should not be null", hash);
+        assertEquals("Hash should be 64 characters", 64, hash.length());
+    }
+    
+    @Test
+    public void testSafeRead_EmptyFile() throws IOException {
+        // Create an empty file
+        Files.write(new File(TEST_FILE).toPath(), new byte[0]);
+        
+        String content = FileOperations.safeRead(TEST_FILE);
+        
+        assertNotNull("Content should not be null for empty file", content);
+        assertEquals("Content should be empty string", "", content);
+    }
+    
+    @Test
+    public void testSafeRead_SingleLine() throws IOException {
+        // Create a file with single line (no newline)
+        String singleLine = "Single line content";
+        Files.write(new File(TEST_FILE).toPath(), singleLine.getBytes());
+        
+        String content = FileOperations.safeRead(TEST_FILE);
+        
+        assertEquals("Content should match", singleLine, content);
+    }
+    
+    @Test
+    public void testAtomicWrite_IOExceptionHandling() throws IOException {
+        // Try to write to a directory (should fail)
+        File dir = new File(TEST_DIR + File.separator + "write_test");
+        dir.mkdirs();
+        
+        // Try to write to directory path (should fail gracefully)
+        boolean success = FileOperations.atomicWrite(dir.getAbsolutePath(), TEST_CONTENT);
+        
+        // Should fail but not throw exception
+        assertFalse("Atomic write should fail for directory path", success);
+    }
+    
+    @Test
+    public void testVerifyFileIntegrity_NullActualHash() throws IOException {
+        // Create a file that exists but hash calculation might fail
+        // This is hard to simulate, but we can test with a valid file
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        
+        // Use an invalid hash that won't match
+        boolean isValid = FileOperations.verifyFileIntegrity(TEST_FILE, "invalid_hash");
+        
+        assertFalse("File integrity should be invalid for wrong hash", isValid);
+    }
 }
 

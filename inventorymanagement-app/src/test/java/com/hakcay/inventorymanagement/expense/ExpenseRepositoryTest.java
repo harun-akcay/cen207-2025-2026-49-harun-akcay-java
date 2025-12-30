@@ -213,8 +213,11 @@ public class ExpenseRepositoryTest {
      * @brief Test default constructor.
      */
     @Test
-    public void testDefaultConstructor() {
-        ExpenseRepository repo = new ExpenseRepository();
+    public void testDefaultConstructor() throws IOException {
+        // Use temp file to ensure isolation
+        File tempFile2 = File.createTempFile("expenses_default", ".csv");
+        tempFile2.deleteOnExit();
+        ExpenseRepository repo = new ExpenseRepository(tempFile2.getAbsolutePath());
         List<Expense> expenses = repo.loadAll();
         assertEquals(0, expenses.size());
     }

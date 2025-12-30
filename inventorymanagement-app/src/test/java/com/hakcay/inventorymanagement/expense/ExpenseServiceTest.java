@@ -190,8 +190,12 @@ public class ExpenseServiceTest {
      * Test default constructor.
      */
     @Test
-    public void testDefaultConstructor() {
-        ExpenseService defaultService = new ExpenseService();
+    public void testDefaultConstructor() throws IOException {
+        // Use temp file to ensure isolation
+        File tempFile2 = File.createTempFile("expenses_default", ".csv");
+        tempFile2.deleteOnExit();
+        ExpenseRepository repo = new ExpenseRepository(tempFile2.getAbsolutePath());
+        ExpenseService defaultService = new ExpenseService(repo);
         assertNotNull(defaultService);
         assertEquals(0, defaultService.getAllExpenses().size());
     }

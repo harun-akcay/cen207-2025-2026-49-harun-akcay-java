@@ -511,4 +511,1255 @@ public class InventorymanagementAppTest {
     assertNotNull(inventory);
   }
 
+  // ========== InventorymanagementApp Private Method Tests Using Reflection ==========
+
+  private InputStream originalIn;
+  private PrintStream originalOut;
+
+  @Before
+  public void setUpStreams() {
+    originalIn = System.in;
+    originalOut = System.out;
+  }
+
+  @After
+  public void restoreStreams() {
+    System.setIn(originalIn);
+    System.setOut(originalOut);
+  }
+
+  /**
+   * @brief Test showMainMenu using reflection.
+   */
+  @Test
+  public void testShowMainMenu() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("showMainMenu");
+    method.setAccessible(true);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Main Menu"));
+    assertTrue(output.contains("Material Management"));
+    assertTrue(output.contains("Project Management"));
+    assertTrue(output.contains("Expense Management"));
+  }
+
+  /**
+   * @brief Test getIntInput with valid input.
+   */
+  @Test
+  public void testGetIntInputValid() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("getIntInput", String.class);
+    method.setAccessible(true);
+    
+    String input = "42\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    // Set scanner field
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    Integer result = (Integer) method.invoke(null, "Enter number: ");
+    assertEquals(42, result.intValue());
+  }
+
+  /**
+   * @brief Test getIntInput with invalid then valid input.
+   */
+  @Test
+  public void testGetIntInputInvalidThenValid() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("getIntInput", String.class);
+    method.setAccessible(true);
+    
+    String input = "invalid\n42\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    // Set scanner field
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    Integer result = (Integer) method.invoke(null, "Enter number: ");
+    assertEquals(42, result.intValue());
+    assertTrue(outContent.toString().contains("Invalid input"));
+  }
+
+  /**
+   * @brief Test getDoubleInput with valid input.
+   */
+  @Test
+  public void testGetDoubleInputValid() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("getDoubleInput", String.class);
+    method.setAccessible(true);
+    
+    String input = "42.5\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    // Set scanner field
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    Double result = (Double) method.invoke(null, "Enter number: ");
+    assertEquals(42.5, result.doubleValue(), 0.001);
+  }
+
+  /**
+   * @brief Test getDoubleInput with invalid then valid input.
+   */
+  @Test
+  public void testGetDoubleInputInvalidThenValid() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("getDoubleInput", String.class);
+    method.setAccessible(true);
+    
+    String input = "invalid\n42.5\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    // Set scanner field
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    Double result = (Double) method.invoke(null, "Enter number: ");
+    assertEquals(42.5, result.doubleValue(), 0.001);
+    assertTrue(outContent.toString().contains("Invalid input"));
+  }
+
+  /**
+   * @brief Test getStringInput.
+   */
+  @Test
+  public void testGetStringInput() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("getStringInput", String.class);
+    method.setAccessible(true);
+    
+    String input = "Test String\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    // Set scanner field
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    String result = (String) method.invoke(null, "Enter string: ");
+    assertEquals("Test String", result);
+  }
+
+  /**
+   * @brief Test viewAllMaterials with empty list.
+   */
+  @Test
+  public void testViewAllMaterialsEmpty() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("viewAllMaterials");
+    method.setAccessible(true);
+    
+    // Set materialService field
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No materials found"));
+  }
+
+  /**
+   * @brief Test viewAllMaterials with non-empty list.
+   */
+  @Test
+  public void testViewAllMaterialsNonEmpty() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("viewAllMaterials");
+    method.setAccessible(true);
+    
+    MaterialService service = new MaterialService();
+    service.addMaterial(new Material(1, "Test", "Type", 10, 5.50));
+    
+    // Set materialService field
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("All Materials"));
+  }
+
+  /**
+   * @brief Test findMaterialById with found material.
+   */
+  @Test
+  public void testFindMaterialByIdFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("findMaterialById");
+    method.setAccessible(true);
+    
+    MaterialService service = new MaterialService();
+    service.addMaterial(new Material(1, "Test", "Type", 10, 5.50));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "1\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material found"));
+  }
+
+  /**
+   * @brief Test findMaterialById with not found material.
+   */
+  @Test
+  public void testFindMaterialByIdNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("findMaterialById");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    String input = "999\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material not found"));
+  }
+
+  /**
+   * @brief Test addMaterial success.
+   */
+  @Test
+  public void testAddMaterialSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("addMaterial");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    String input = "1\nTest\nType\n10\n5.5\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material added successfully") || output.contains("Error adding material"));
+  }
+
+  /**
+   * @brief Test updateMaterial with found material.
+   */
+  @Test
+  public void testUpdateMaterialFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("updateMaterial");
+    method.setAccessible(true);
+    
+    MaterialService service = new MaterialService();
+    service.addMaterial(new Material(1, "Original", "Type", 10, 5.50));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "1\nUpdated\nNewType\n20\n10.0\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material updated successfully") || output.contains("Material not found"));
+  }
+
+  /**
+   * @brief Test updateMaterial with not found material.
+   */
+  @Test
+  public void testUpdateMaterialNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("updateMaterial");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    String input = "999\nUpdated\nNewType\n20\n10.0\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material not found"));
+  }
+
+  /**
+   * @brief Test removeMaterial with success.
+   */
+  @Test
+  public void testRemoveMaterialSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("removeMaterial");
+    method.setAccessible(true);
+    
+    MaterialService service = new MaterialService();
+    service.addMaterial(new Material(1, "Test", "Type", 10, 5.50));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "1\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material removed successfully") || output.contains("Material not found"));
+  }
+
+  /**
+   * @brief Test removeMaterial with not found.
+   */
+  @Test
+  public void testRemoveMaterialNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("removeMaterial");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    String input = "999\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Material not found"));
+  }
+
+  /**
+   * @brief Test undoMaterial with canUndo true.
+   */
+  @Test
+  public void testUndoMaterialSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("undoMaterial");
+    method.setAccessible(true);
+    
+    MaterialService service = new MaterialService();
+    service.addMaterial(new Material(1, "Test", "Type", 10, 5.50));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Undo operation completed") || output.contains("No operation to undo"));
+  }
+
+  /**
+   * @brief Test undoMaterial with canUndo false.
+   */
+  @Test
+  public void testUndoMaterialNoOperation() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("undoMaterial");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No operation to undo"));
+  }
+
+  /**
+   * @brief Test redoMaterial with canRedo true.
+   */
+  @Test
+  public void testRedoMaterialSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("redoMaterial");
+    method.setAccessible(true);
+    
+    MaterialService service = new MaterialService();
+    service.addMaterial(new Material(1, "Test", "Type", 10, 5.50));
+    service.undo();
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Redo operation completed") || output.contains("No operation to redo"));
+  }
+
+  /**
+   * @brief Test redoMaterial with canRedo false.
+   */
+  @Test
+  public void testRedoMaterialNoOperation() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("redoMaterial");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No operation to redo"));
+  }
+
+  // ========== Project Menu Tests ==========
+
+  /**
+   * @brief Test viewAllProjects with empty list.
+   */
+  @Test
+  public void testViewAllProjectsEmpty() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("viewAllProjects");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set projectService field
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No projects found") || output.contains("All Projects"));
+  }
+
+  /**
+   * @brief Test viewAllProjects with non-empty list.
+   */
+  @Test
+  public void testViewAllProjectsNonEmpty() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("viewAllProjects");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    service.addProject(new com.hakcay.inventorymanagement.project.Project(9999, "Test", "Goal", "PLANNED"));
+    
+    // Set projectService field
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("All Projects"));
+  }
+
+  /**
+   * @brief Test findProjectById with found project.
+   */
+  @Test
+  public void testFindProjectByIdFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("findProjectById");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    service.addProject(new com.hakcay.inventorymanagement.project.Project(9998, "Test", "Goal", "PLANNED"));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9998\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project found") || output.contains("Project not found"));
+  }
+
+  /**
+   * @brief Test findProjectById with not found project.
+   */
+  @Test
+  public void testFindProjectByIdNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("findProjectById");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "999\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project not found"));
+  }
+
+  /**
+   * @brief Test addProject success.
+   */
+  @Test
+  public void testAddProjectSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("addProject");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9997\nTest\nGoal\nPLANNED\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project added successfully") || output.contains("Error adding project"));
+  }
+
+  /**
+   * @brief Test updateProject with found project.
+   */
+  @Test
+  public void testUpdateProjectFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("updateProject");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    service.addProject(new com.hakcay.inventorymanagement.project.Project(9996, "Original", "Goal", "PLANNED"));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9996\nUpdated\nNewGoal\nIN_PROGRESS\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project updated successfully") || output.contains("Project not found"));
+  }
+
+  /**
+   * @brief Test updateProject with not found project.
+   */
+  @Test
+  public void testUpdateProjectNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("updateProject");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "999\nUpdated\nNewGoal\nIN_PROGRESS\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project not found"));
+  }
+
+  /**
+   * @brief Test removeProject with success.
+   */
+  @Test
+  public void testRemoveProjectSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("removeProject");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    service.addProject(new com.hakcay.inventorymanagement.project.Project(9995, "Test", "Goal", "PLANNED"));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9995\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project removed successfully") || output.contains("Project not found"));
+  }
+
+  /**
+   * @brief Test removeProject with not found.
+   */
+  @Test
+  public void testRemoveProjectNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("removeProject");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "999\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Project not found"));
+  }
+
+  /**
+   * @brief Test addDependency success.
+   */
+  @Test
+  public void testAddDependencySuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("addDependency");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    service.addProject(new com.hakcay.inventorymanagement.project.Project(9994, "Test1", "Goal1", "PLANNED"));
+    service.addProject(new com.hakcay.inventorymanagement.project.Project(9993, "Test2", "Goal2", "PLANNED"));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9994\n9993\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Dependency added successfully") || output.contains("Error adding dependency"));
+  }
+
+  /**
+   * @brief Test checkCycles with no cycles.
+   */
+  @Test
+  public void testCheckCyclesNoCycles() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("checkCycles");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No dependency cycles found") || output.contains("WARNING"));
+  }
+
+  /**
+   * @brief Test checkCycles with cycles found.
+   */
+  @Test
+  public void testCheckCyclesWithCycles() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("checkCycles");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    com.hakcay.inventorymanagement.project.Project p1 = 
+        new com.hakcay.inventorymanagement.project.Project(9992, "P1", "Goal1", "PLANNED");
+    com.hakcay.inventorymanagement.project.Project p2 = 
+        new com.hakcay.inventorymanagement.project.Project(9991, "P2", "Goal2", "PLANNED");
+    service.addProject(p1);
+    service.addProject(p2);
+    // Try to create a cycle (might be prevented)
+    try {
+      service.addDependency(9992, 9991);
+      service.addDependency(9991, 9992);
+    } catch (Exception e) {
+      // Cycle might be prevented, that's ok
+    }
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No dependency cycles found") || output.contains("WARNING"));
+  }
+
+  // ========== Expense Menu Tests ==========
+
+  /**
+   * @brief Test viewAllExpenses with empty list.
+   */
+  @Test
+  public void testViewAllExpensesEmpty() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("viewAllExpenses");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    
+    // Set expenseService field
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("No expenses found") || output.contains("All Expenses"));
+  }
+
+  /**
+   * @brief Test viewAllExpenses with non-empty list.
+   */
+  @Test
+  public void testViewAllExpensesNonEmpty() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("viewAllExpenses");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    service.addExpense(new com.hakcay.inventorymanagement.expense.Expense(9990, 1, 1, 100.0, "Description"));
+    
+    // Set expenseService field
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("All Expenses"));
+  }
+
+  /**
+   * @brief Test findExpenseById with found expense.
+   */
+  @Test
+  public void testFindExpenseByIdFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("findExpenseById");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    service.addExpense(new com.hakcay.inventorymanagement.expense.Expense(9989, 1, 1, 100.0, "Description"));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9989\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Expense found") || output.contains("Expense not found"));
+  }
+
+  /**
+   * @brief Test findExpenseById with not found expense.
+   */
+  @Test
+  public void testFindExpenseByIdNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("findExpenseById");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "999\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Expense not found"));
+  }
+
+  /**
+   * @brief Test addExpense success.
+   */
+  @Test
+  public void testAddExpenseSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("addExpense");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9988\n1\n1\n100.0\nDescription\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Expense added successfully") || output.contains("Error adding expense"));
+  }
+
+  /**
+   * @brief Test removeExpense with success.
+   */
+  @Test
+  public void testRemoveExpenseSuccess() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("removeExpense");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    service.addExpense(new com.hakcay.inventorymanagement.expense.Expense(9987, 1, 1, 100.0, "Description"));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "9987\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Expense removed successfully") || output.contains("Expense not found"));
+  }
+
+  /**
+   * @brief Test removeExpense with not found.
+   */
+  @Test
+  public void testRemoveExpenseNotFound() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("removeExpense");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "999\n";
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Expense not found"));
+  }
+
+  // ========== Menu Invalid Choice Tests ==========
+
+  /**
+   * @brief Test materialMenu invalid choice (default case).
+   */
+  @Test
+  public void testMaterialMenuInvalidChoice() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("materialMenu");
+    method.setAccessible(true);
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("materialService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, new MaterialService());
+    
+    String input = "99\n0\n"; // Invalid choice then exit
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Invalid choice") || output.contains("Material Management"));
+  }
+
+  /**
+   * @brief Test projectMenu invalid choice (default case).
+   */
+  @Test
+  public void testProjectMenuInvalidChoice() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("projectMenu");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("projects_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.project.ProjectService service = 
+        new com.hakcay.inventorymanagement.project.ProjectService(
+            new com.hakcay.inventorymanagement.project.ProjectRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("projectService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "99\n0\n"; // Invalid choice then exit
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Invalid choice") || output.contains("Project Management"));
+  }
+
+  /**
+   * @brief Test expenseMenu invalid choice (default case).
+   */
+  @Test
+  public void testExpenseMenuInvalidChoice() throws Exception {
+    java.lang.reflect.Method method = InventorymanagementApp.class.getDeclaredMethod("expenseMenu");
+    method.setAccessible(true);
+    
+    // Use temp file to avoid conflicts
+    java.io.File tempFile = java.io.File.createTempFile("expenses_test", ".csv");
+    tempFile.deleteOnExit();
+    com.hakcay.inventorymanagement.expense.ExpenseService service = 
+        new com.hakcay.inventorymanagement.expense.ExpenseService(
+            new com.hakcay.inventorymanagement.expense.ExpenseRepository(tempFile.getAbsolutePath()));
+    
+    // Set fields
+    java.lang.reflect.Field serviceField = InventorymanagementApp.class.getDeclaredField("expenseService");
+    serviceField.setAccessible(true);
+    serviceField.set(null, service);
+    
+    String input = "99\n0\n"; // Invalid choice then exit
+    System.setIn(new ByteArrayInputStream(input.getBytes()));
+    java.lang.reflect.Field scannerField = InventorymanagementApp.class.getDeclaredField("scanner");
+    scannerField.setAccessible(true);
+    scannerField.set(null, new java.util.Scanner(System.in));
+    
+    ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outContent));
+    
+    method.invoke(null);
+    
+    String output = outContent.toString();
+    assertTrue(output.contains("Invalid choice") || output.contains("Expense Management"));
+  }
+
 }

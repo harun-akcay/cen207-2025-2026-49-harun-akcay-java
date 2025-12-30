@@ -171,5 +171,83 @@ public class BPlusTreeNodeTest {
         assertEquals(child, internalNode.getChild(0));
         assertNull(internalNode.getChild(999));
     }
+    
+    @Test
+    public void testGetChildFromLeaf() {
+        // getChild should return null for leaf nodes
+        assertNull(leafNode.getChild(0));
+    }
+    
+    @Test
+    public void testGetChildNegativeIndex() {
+        BPlusTreeNode<Integer, String> child = new BPlusTreeNode<>(true, 3);
+        internalNode.addKeyChild(5, child);
+        
+        assertNull(internalNode.getChild(-1));
+    }
+    
+    @Test
+    public void testGetValueByIndexFromInternalNode() {
+        // getValue(index) should return null for internal nodes
+        assertNull(internalNode.getValue(0));
+    }
+    
+    @Test
+    public void testGetValueByIndexNegativeIndex() {
+        leafNode.addKeyValue(1, "One");
+        assertNull(leafNode.getValue(-1));
+    }
+    
+    @Test
+    public void testAddFirstChildWhenChildrenNotEmpty() {
+        BPlusTreeNode<Integer, String> child1 = new BPlusTreeNode<>(true, 3);
+        BPlusTreeNode<Integer, String> child2 = new BPlusTreeNode<>(true, 3);
+        
+        internalNode.addFirstChild(child1);
+        internalNode.addFirstChild(child2); // Should not add since children is not empty
+        
+        assertEquals(1, internalNode.getChildren().size());
+        assertEquals(child1, internalNode.getChild(0));
+    }
+    
+    @Test
+    public void testAddFirstChildToLeaf() {
+        BPlusTreeNode<Integer, String> child = new BPlusTreeNode<>(true, 3);
+        leafNode.addFirstChild(child); // Should not add to leaf
+        
+        assertEquals(0, leafNode.getChildren().size());
+    }
+    
+    @Test
+    public void testHasMinimumKeysWithMaxKeys1() {
+        BPlusTreeNode<Integer, String> node = new BPlusTreeNode<>(true, 1);
+        assertFalse(node.hasMinimumKeys());
+        node.addKeyValue(1, "One");
+        assertTrue(node.hasMinimumKeys());
+    }
+    
+    @Test
+    public void testHasMinimumKeysWithMaxKeys2() {
+        BPlusTreeNode<Integer, String> node = new BPlusTreeNode<>(true, 2);
+        assertFalse(node.hasMinimumKeys());
+        node.addKeyValue(1, "One");
+        assertTrue(node.hasMinimumKeys());
+    }
+    
+    @Test
+    public void testAddKeyChildWithEmptyChildren() {
+        BPlusTreeNode<Integer, String> child = new BPlusTreeNode<>(true, 3);
+        internalNode.addKeyChild(5, child);
+        
+        assertEquals(1, internalNode.getChildren().size());
+        assertEquals(child, internalNode.getChild(0));
+        assertEquals(0, internalNode.getKeyCount()); // No key added when children is empty
+    }
+    
+    @Test
+    public void testGetKeyNegativeIndex() {
+        leafNode.addKeyValue(1, "One");
+        assertNull(leafNode.getKey(-1));
+    }
 }
 
