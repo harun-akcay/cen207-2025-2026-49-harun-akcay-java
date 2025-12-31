@@ -1,8 +1,17 @@
+/**
+ * @file Sale.java
+ * @brief This file contains the Sale model class for sales tracking.
+ * @details This class represents a sale in the sales tracking system with properties
+ *          such as id, material id, quantity, price, date, and customer name.
+ * @package com.hakcay.inventorymanagement.sales
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.sales;
 
 /**
- * Represents a sale in the sales tracking system.
- * Contains information about sale id, material id, quantity, price, date, and customer name.
+ * @class Sale
+ * @brief Represents a sale in the sales tracking system.
+ * @details Contains information about sale id, material id, quantity, price, date, and customer name.
  */
 public class Sale {
     private int id;
@@ -13,14 +22,13 @@ public class Sale {
     private String customerName;
 
     /**
-     * Default constructor.
+     * @brief Default constructor.
      */
     public Sale() {
     }
 
     /**
-     * Constructor with all fields.
-     *
+     * @brief Constructor with all fields.
      * @param id the sale id
      * @param materialId the material id associated with this sale
      * @param quantity the quantity sold
@@ -38,8 +46,7 @@ public class Sale {
     }
 
     /**
-     * Gets the sale id.
-     *
+     * @brief Gets the sale id.
      * @return the sale id
      */
     public int getId() {
@@ -47,8 +54,7 @@ public class Sale {
     }
 
     /**
-     * Sets the sale id.
-     *
+     * @brief Sets the sale id.
      * @param id the sale id
      */
     public void setId(int id) {
@@ -56,8 +62,7 @@ public class Sale {
     }
 
     /**
-     * Gets the material id.
-     *
+     * @brief Gets the material id.
      * @return the material id
      */
     public int getMaterialId() {
@@ -65,8 +70,7 @@ public class Sale {
     }
 
     /**
-     * Sets the material id.
-     *
+     * @brief Sets the material id.
      * @param materialId the material id
      */
     public void setMaterialId(int materialId) {
@@ -74,8 +78,7 @@ public class Sale {
     }
 
     /**
-     * Gets the quantity sold.
-     *
+     * @brief Gets the quantity sold.
      * @return the quantity
      */
     public int getQuantity() {
@@ -83,8 +86,7 @@ public class Sale {
     }
 
     /**
-     * Sets the quantity sold.
-     *
+     * @brief Sets the quantity sold.
      * @param quantity the quantity
      */
     public void setQuantity(int quantity) {
@@ -92,8 +94,7 @@ public class Sale {
     }
 
     /**
-     * Gets the sale price per unit.
-     *
+     * @brief Gets the sale price per unit.
      * @return the price
      */
     public double getPrice() {
@@ -101,8 +102,7 @@ public class Sale {
     }
 
     /**
-     * Sets the sale price per unit.
-     *
+     * @brief Sets the sale price per unit.
      * @param price the price
      */
     public void setPrice(double price) {
@@ -110,8 +110,7 @@ public class Sale {
     }
 
     /**
-     * Gets the sale date.
-     *
+     * @brief Gets the sale date.
      * @return the date
      */
     public String getDate() {
@@ -119,8 +118,7 @@ public class Sale {
     }
 
     /**
-     * Sets the sale date.
-     *
+     * @brief Sets the sale date.
      * @param date the date
      */
     public void setDate(String date) {
@@ -128,8 +126,7 @@ public class Sale {
     }
 
     /**
-     * Gets the customer name.
-     *
+     * @brief Gets the customer name.
      * @return the customer name
      */
     public String getCustomerName() {
@@ -137,8 +134,7 @@ public class Sale {
     }
 
     /**
-     * Sets the customer name.
-     *
+     * @brief Sets the customer name.
      * @param customerName the customer name
      */
     public void setCustomerName(String customerName) {
@@ -146,8 +142,7 @@ public class Sale {
     }
 
     /**
-     * Calculates the total sale amount (quantity * price).
-     *
+     * @brief Calculates the total sale amount (quantity * price).
      * @return the total sale amount
      */
     public double getTotalAmount() {
@@ -155,8 +150,7 @@ public class Sale {
     }
 
     /**
-     * Returns a string representation of the sale.
-     *
+     * @brief Returns a string representation of the sale.
      * @return string representation
      */
     @Override

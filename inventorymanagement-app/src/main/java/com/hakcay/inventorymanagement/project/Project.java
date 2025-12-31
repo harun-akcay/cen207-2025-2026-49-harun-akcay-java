@@ -1,8 +1,17 @@
+/**
+ * @file Project.java
+ * @brief This file contains the Project model class for project management.
+ * @details This class represents a project in the project tracking system with properties
+ *          such as id, name, goal, and status.
+ * @package com.hakcay.inventorymanagement.project
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.project;
 
 /**
- * Represents a project in the project tracking system.
- * Contains information about project id, name, goal, and status.
+ * @class Project
+ * @brief Represents a project in the project tracking system.
+ * @details Contains information about project id, name, goal, and status.
  */
 public class Project {
     private int id;
@@ -11,14 +20,14 @@ public class Project {
     private String status;
 
     /**
-     * Default constructor.
+     * @brief Default constructor.
+     * @details Creates an empty Project object.
      */
     public Project() {
     }
 
     /**
-     * Constructor with all fields.
-     *
+     * @brief Constructor with all fields.
      * @param id the project id
      * @param name the project name
      * @param goal the project goal
@@ -32,8 +41,7 @@ public class Project {
     }
 
     /**
-     * Gets the project id.
-     *
+     * @brief Gets the project id.
      * @return the project id
      */
     public int getId() {
@@ -41,8 +49,7 @@ public class Project {
     }
 
     /**
-     * Sets the project id.
-     *
+     * @brief Sets the project id.
      * @param id the project id
      */
     public void setId(int id) {
@@ -50,8 +57,7 @@ public class Project {
     }
 
     /**
-     * Gets the project name.
-     *
+     * @brief Gets the project name.
      * @return the project name
      */
     public String getName() {
@@ -59,8 +65,7 @@ public class Project {
     }
 
     /**
-     * Sets the project name.
-     *
+     * @brief Sets the project name.
      * @param name the project name
      */
     public void setName(String name) {
@@ -68,8 +73,7 @@ public class Project {
     }
 
     /**
-     * Gets the project goal.
-     *
+     * @brief Gets the project goal.
      * @return the project goal
      */
     public String getGoal() {
@@ -77,8 +81,7 @@ public class Project {
     }
 
     /**
-     * Sets the project goal.
-     *
+     * @brief Sets the project goal.
      * @param goal the project goal
      */
     public void setGoal(String goal) {
@@ -86,8 +89,7 @@ public class Project {
     }
 
     /**
-     * Gets the project status.
-     *
+     * @brief Gets the project status.
      * @return the project status
      */
     public String getStatus() {
@@ -95,8 +97,7 @@ public class Project {
     }
 
     /**
-     * Sets the project status.
-     *
+     * @brief Sets the project status.
      * @param status the project status
      */
     public void setStatus(String status) {
@@ -104,8 +105,7 @@ public class Project {
     }
 
     /**
-     * Returns a string representation of the project.
-     *
+     * @brief Returns a string representation of the project.
      * @return string representation
      */
     @Override

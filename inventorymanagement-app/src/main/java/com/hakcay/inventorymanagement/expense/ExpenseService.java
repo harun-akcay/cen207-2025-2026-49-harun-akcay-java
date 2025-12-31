@@ -1,18 +1,27 @@
+/**
+ * @file ExpenseService.java
+ * @brief This file contains the ExpenseService class for business logic.
+ * @details This class provides business logic for managing expenses including
+ *          adding, removing, and retrieving expenses.
+ * @package com.hakcay.inventorymanagement.expense
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.expense;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service class for managing Expense operations.
- * Provides business logic for adding, removing, and retrieving expenses.
+ * @class ExpenseService
+ * @brief Service class for managing Expense operations.
+ * @details Provides business logic for adding, removing, and retrieving expenses.
  */
 public class ExpenseService {
     private ExpenseRepository repository;
     private List<Expense> expenses;
 
     /**
-     * Constructor that initializes the repository and loads existing expenses.
+     * @brief Constructor that initializes the repository and loads existing expenses.
      */
     public ExpenseService() {
         this.repository = new ExpenseRepository();
@@ -20,8 +29,7 @@ public class ExpenseService {
     }
 
     /**
-     * Constructor that accepts a repository (for testing purposes).
-     *
+     * @brief Constructor that accepts a repository (for testing purposes).
      * @param repository the expense repository to use
      */
     public ExpenseService(ExpenseRepository repository) {
@@ -30,9 +38,8 @@ public class ExpenseService {
     }
 
     /**
-     * Adds a new expense to the logging system.
-     * Enforces unique id constraint - throws IllegalArgumentException if id already exists.
-     *
+     * @brief Adds a new expense to the logging system.
+     * @details Enforces unique id constraint - throws IllegalArgumentException if id already exists.
      * @param expense the expense to add
      * @throws IllegalArgumentException if expense id already exists
      */
@@ -53,8 +60,7 @@ public class ExpenseService {
     }
 
     /**
-     * Removes an expense from the logging system by id.
-     *
+     * @brief Removes an expense from the logging system by id.
      * @param id the id of the expense to remove
      * @return true if expense was removed, false if not found
      */
@@ -67,8 +73,7 @@ public class ExpenseService {
     }
 
     /**
-     * Gets all expenses in the logging system.
-     *
+     * @brief Gets all expenses in the logging system.
      * @return list of all expenses
      */
     public List<Expense> getAllExpenses() {
@@ -76,8 +81,7 @@ public class ExpenseService {
     }
 
     /**
-     * Gets an expense by its ID.
-     *
+     * @brief Gets an expense by its ID.
      * @param id the expense ID
      * @return the expense if found, null otherwise
      */
@@ -91,8 +95,7 @@ public class ExpenseService {
     }
 
     /**
-     * Calculates the total expense amount for a specific project.
-     *
+     * @brief Calculates the total expense amount for a specific project.
      * @param projectId the project id
      * @return the total expense amount for the project
      */

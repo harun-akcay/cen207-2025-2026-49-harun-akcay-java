@@ -1,3 +1,13 @@
+/**
+ * @file ProjectRepository.java
+ * @brief This file contains the ProjectRepository class for data access.
+ * @details This class provides persistence operations for projects using CSV files.
+ *          Uses HashTable for O(1) lookup performance.
+ *          Uses B+ Tree for ordered indexing and file indexing.
+ *          Uses FileOperations for hash-based file integrity and atomic operations.
+ * @package com.hakcay.inventorymanagement.project
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.project;
 
 import java.io.File;
@@ -9,11 +19,12 @@ import com.hakcay.inventorymanagement.algorithms.fileops.FileOperations;
 import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
 
 /**
- * Repository class for persisting Project objects to a CSV file.
- * Handles reading from and writing to projects.csv file.
- * Uses HashTable for O(1) lookup performance.
- * Uses B+ Tree for ordered indexing and file indexing.
- * Uses FileOperations for hash-based file integrity and atomic operations.
+ * @class ProjectRepository
+ * @brief Repository class for persisting Project objects to a CSV file.
+ * @details Handles reading from and writing to projects.csv file.
+ *          Uses HashTable for O(1) lookup performance.
+ *          Uses B+ Tree for ordered indexing and file indexing.
+ *          Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class ProjectRepository {
     private static final String DEFAULT_CSV_FILE = "projects.csv";
@@ -28,7 +39,8 @@ public class ProjectRepository {
     private BPlusTree<Integer, Project> projectIndex;
 
     /**
-     * Default constructor that uses the default CSV file name.
+     * @brief Default constructor that uses the default CSV file name.
+     * @details Initializes HashTable and B+ Tree for indexing.
      */
     public ProjectRepository() {
         this.csvFile = DEFAULT_CSV_FILE;
@@ -37,8 +49,7 @@ public class ProjectRepository {
     }
 
     /**
-     * Constructor that accepts a custom file path.
-     *
+     * @brief Constructor that accepts a custom file path.
      * @param filePath the path to the CSV file
      */
     public ProjectRepository(String filePath) {

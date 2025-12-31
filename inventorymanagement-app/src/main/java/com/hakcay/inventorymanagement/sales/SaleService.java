@@ -1,18 +1,27 @@
+/**
+ * @file SaleService.java
+ * @brief This file contains the SaleService class for business logic.
+ * @details This class provides business logic for managing sales including
+ *          adding, removing, and retrieving sales.
+ * @package com.hakcay.inventorymanagement.sales
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.sales;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service class for managing Sale operations.
- * Provides business logic for adding, removing, and retrieving sales.
+ * @class SaleService
+ * @brief Service class for managing Sale operations.
+ * @details Provides business logic for adding, removing, and retrieving sales.
  */
 public class SaleService {
     private SaleRepository repository;
     private List<Sale> sales;
 
     /**
-     * Constructor that initializes the repository and loads existing sales.
+     * @brief Constructor that initializes the repository and loads existing sales.
      */
     public SaleService() {
         this.repository = new SaleRepository();
@@ -20,8 +29,7 @@ public class SaleService {
     }
 
     /**
-     * Constructor that accepts a repository (for testing purposes).
-     *
+     * @brief Constructor that accepts a repository (for testing purposes).
      * @param repository the sale repository to use
      */
     public SaleService(SaleRepository repository) {
@@ -30,9 +38,8 @@ public class SaleService {
     }
 
     /**
-     * Adds a new sale to the tracking system.
-     * Enforces unique id constraint - throws IllegalArgumentException if id already exists.
-     *
+     * @brief Adds a new sale to the tracking system.
+     * @details Enforces unique id constraint - throws IllegalArgumentException if id already exists.
      * @param sale the sale to add
      * @throws IllegalArgumentException if sale id already exists
      */
@@ -53,8 +60,7 @@ public class SaleService {
     }
 
     /**
-     * Removes a sale from the tracking system by id.
-     *
+     * @brief Removes a sale from the tracking system by id.
      * @param id the id of the sale to remove
      * @return true if sale was removed, false if not found
      */
@@ -67,8 +73,7 @@ public class SaleService {
     }
 
     /**
-     * Gets all sales in the tracking system.
-     *
+     * @brief Gets all sales in the tracking system.
      * @return list of all sales
      */
     public List<Sale> getAllSales() {
@@ -76,8 +81,7 @@ public class SaleService {
     }
 
     /**
-     * Gets a sale by its ID.
-     *
+     * @brief Gets a sale by its ID.
      * @param id the sale ID
      * @return the sale if found, null otherwise
      */
@@ -91,8 +95,7 @@ public class SaleService {
     }
 
     /**
-     * Gets all sales for a specific material.
-     *
+     * @brief Gets all sales for a specific material.
      * @param materialId the material id
      * @return list of sales for the material
      */
@@ -107,8 +110,7 @@ public class SaleService {
     }
 
     /**
-     * Calculates the total revenue from all sales.
-     *
+     * @brief Calculates the total revenue from all sales.
      * @return the total revenue
      */
     public double getTotalRevenue() {
@@ -120,8 +122,7 @@ public class SaleService {
     }
 
     /**
-     * Calculates the total revenue for a specific material.
-     *
+     * @brief Calculates the total revenue for a specific material.
      * @param materialId the material id
      * @return the total revenue for the material
      */
@@ -136,8 +137,7 @@ public class SaleService {
     }
 
     /**
-     * Gets the total quantity sold for a specific material.
-     *
+     * @brief Gets the total quantity sold for a specific material.
      * @param materialId the material id
      * @return the total quantity sold
      */

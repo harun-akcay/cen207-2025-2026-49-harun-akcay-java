@@ -1,3 +1,12 @@
+/**
+ * @file ProjectService.java
+ * @brief This file contains the ProjectService class for business logic.
+ * @details This class provides business logic for managing projects including
+ *          adding, updating, removing, and retrieving projects.
+ *          Includes BFS/DFS integration for project dependency graph traversal.
+ * @package com.hakcay.inventorymanagement.project
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.project;
 
 import java.util.ArrayList;
@@ -10,9 +19,10 @@ import com.hakcay.inventorymanagement.algorithms.graph.StronglyConnectedComponen
 import com.hakcay.inventorymanagement.algorithms.kmp.KMPAlgorithm;
 
 /**
- * Service class for managing Project operations.
- * Provides business logic for adding, updating, removing, and retrieving projects.
- * Includes BFS/DFS integration for project dependency graph traversal.
+ * @class ProjectService
+ * @brief Service class for managing Project operations.
+ * @details Provides business logic for adding, updating, removing, and retrieving projects.
+ *          Includes BFS/DFS integration for project dependency graph traversal.
  */
 public class ProjectService {
     private ProjectRepository repository;
@@ -21,7 +31,8 @@ public class ProjectService {
     private Graph<Integer> dependencyGraph;
 
     /**
-     * Constructor that initializes the repository and loads existing projects.
+     * @brief Constructor that initializes the repository and loads existing projects.
+     * @details Creates a new ProjectService instance and rebuilds the dependency graph.
      */
     public ProjectService() {
         this.repository = new ProjectRepository();
@@ -31,8 +42,7 @@ public class ProjectService {
     }
 
     /**
-     * Constructor that accepts a repository (for testing purposes).
-     *
+     * @brief Constructor that accepts a repository (for testing purposes).
      * @param repository the project repository to use
      */
     public ProjectService(ProjectRepository repository) {
@@ -43,8 +53,8 @@ public class ProjectService {
     }
     
     /**
-     * Rebuilds the dependency graph from current projects.
-     * This is called after projects are loaded or modified.
+     * @brief Rebuilds the dependency graph from current projects.
+     * @details This is called after projects are loaded or modified.
      */
     private void rebuildDependencyGraph() {
         dependencyGraph.clear();
@@ -378,14 +388,7 @@ public class ProjectService {
     }
     
     /**
-     * Helper method to find a project by ID.
-     *
-     * @param id The project ID
-     * @return The project, or null if not found
-     */
-    /**
-     * Finds a project by its ID.
-     * 
+     * @brief Finds a project by its ID.
      * @param id the project ID
      * @return the project if found, null otherwise
      */

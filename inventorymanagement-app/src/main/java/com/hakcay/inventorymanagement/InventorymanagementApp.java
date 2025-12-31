@@ -37,10 +37,15 @@ import com.hakcay.inventorymanagement.project.ProjectService;
  */
 public class InventorymanagementApp {
   
+  /** @brief Logger instance for application logging */
   private static final Logger logger = (Logger) LoggerFactory.getLogger(InventorymanagementApp.class);
+  /** @brief Service for managing material operations */
   private static MaterialService materialService;
+  /** @brief Service for managing project operations */
   private static ProjectService projectService;
+  /** @brief Service for managing expense operations */
   private static ExpenseService expenseService;
+  /** @brief Scanner instance for reading user input */
   private static Scanner scanner;
   
   /**
@@ -239,6 +244,10 @@ public class InventorymanagementApp {
   }
   
   // Material operations
+  /**
+   * @brief Adds a new material to the inventory.
+   * Prompts user for material details and adds it via MaterialService.
+   */
   private static void addMaterial() {
     try {
       int id = getIntInput("Enter Material ID: ");
@@ -255,6 +264,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Displays all materials in the inventory.
+   */
   private static void viewAllMaterials() {
     List<Material> materials = materialService.getAllMaterials();
     if (materials.isEmpty()) {
@@ -267,6 +279,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Finds and displays a material by its ID.
+   */
   private static void findMaterialById() {
     int id = getIntInput("Enter Material ID: ");
     Material material = materialService.getMaterialById(id);
@@ -277,6 +292,10 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Updates an existing material in the inventory.
+   * Prompts user for new material details and updates via MaterialService.
+   */
   private static void updateMaterial() {
     try {
       int id = getIntInput("Enter Material ID to update: ");
@@ -299,6 +318,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Removes a material from the inventory by ID.
+   */
   private static void removeMaterial() {
     int id = getIntInput("Enter Material ID to remove: ");
     boolean removed = materialService.removeMaterialById(id);
@@ -309,6 +331,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Undoes the last material operation.
+   */
   private static void undoMaterial() {
     if (materialService.canUndo()) {
       materialService.undo();
@@ -318,6 +343,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Redoes the last undone material operation.
+   */
   private static void redoMaterial() {
     if (materialService.canRedo()) {
       materialService.redo();
@@ -328,6 +356,10 @@ public class InventorymanagementApp {
   }
   
   // Project operations
+  /**
+   * @brief Adds a new project to the tracking system.
+   * Prompts user for project details and adds it via ProjectService.
+   */
   private static void addProject() {
     try {
       int id = getIntInput("Enter Project ID: ");
@@ -343,6 +375,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Displays all projects in the tracking system.
+   */
   private static void viewAllProjects() {
     List<Project> projects = projectService.getAllProjects();
     if (projects.isEmpty()) {
@@ -355,6 +390,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Finds and displays a project by its ID.
+   */
   private static void findProjectById() {
     int id = getIntInput("Enter Project ID: ");
     Project project = projectService.findProjectById(id);
@@ -365,6 +403,10 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Updates an existing project in the tracking system.
+   * Prompts user for new project details and updates via ProjectService.
+   */
   private static void updateProject() {
     try {
       int id = getIntInput("Enter Project ID to update: ");
@@ -386,6 +428,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Removes a project from the tracking system by ID.
+   */
   private static void removeProject() {
     int id = getIntInput("Enter Project ID to remove: ");
     boolean removed = projectService.removeProjectById(id);
@@ -396,6 +441,10 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Adds a dependency between two projects.
+   * Prompts user for project IDs and creates dependency via ProjectService.
+   */
   private static void addDependency() {
     try {
       int fromId = getIntInput("Enter Project ID that depends on another: ");
@@ -407,6 +456,10 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Checks for dependency cycles in the project graph.
+   * Displays warning and cycle details if cycles are found.
+   */
   private static void checkCycles() {
     if (projectService.hasDependencyCycle()) {
       System.out.println("WARNING: Dependency cycle detected!");
@@ -421,6 +474,10 @@ public class InventorymanagementApp {
   }
   
   // Expense operations
+  /**
+   * @brief Adds a new expense to the logging system.
+   * Prompts user for expense details and adds it via ExpenseService.
+   */
   private static void addExpense() {
     try {
       int id = getIntInput("Enter Expense ID: ");
@@ -437,6 +494,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Displays all expenses in the logging system.
+   */
   private static void viewAllExpenses() {
     List<Expense> expenses = expenseService.getAllExpenses();
     if (expenses.isEmpty()) {
@@ -449,6 +509,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Finds and displays an expense by its ID.
+   */
   private static void findExpenseById() {
     int id = getIntInput("Enter Expense ID: ");
     Expense expense = expenseService.getExpenseById(id);
@@ -459,6 +522,9 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Removes an expense from the logging system by ID.
+   */
   private static void removeExpense() {
     int id = getIntInput("Enter Expense ID to remove: ");
     boolean removed = expenseService.removeExpenseById(id);
@@ -470,6 +536,11 @@ public class InventorymanagementApp {
   }
   
   // Helper methods for input
+  /**
+   * @brief Reads an integer value from user input.
+   * @param prompt The prompt message to display
+   * @return The integer value entered by the user
+   */
   private static int getIntInput(String prompt) {
     System.out.print(prompt);
     try {
@@ -480,6 +551,11 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Reads a double value from user input.
+   * @param prompt The prompt message to display
+   * @return The double value entered by the user
+   */
   private static double getDoubleInput(String prompt) {
     System.out.print(prompt);
     try {
@@ -490,6 +566,11 @@ public class InventorymanagementApp {
     }
   }
   
+  /**
+   * @brief Reads a string value from user input.
+   * @param prompt The prompt message to display
+   * @return The string value entered by the user
+   */
   private static String getStringInput(String prompt) {
     System.out.print(prompt);
     return scanner.nextLine().trim();

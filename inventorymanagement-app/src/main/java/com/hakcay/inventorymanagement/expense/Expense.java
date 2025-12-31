@@ -1,8 +1,17 @@
+/**
+ * @file Expense.java
+ * @brief This file contains the Expense model class for expense logging.
+ * @details This class represents an expense in the expense logging system with properties
+ *          such as id, material id, project id, amount, and description.
+ * @package com.hakcay.inventorymanagement.expense
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.expense;
 
 /**
- * Represents an expense in the expense logging system.
- * Contains information about expense id, material id, project id, amount, and description.
+ * @class Expense
+ * @brief Represents an expense in the expense logging system.
+ * @details Contains information about expense id, material id, project id, amount, and description.
  */
 public class Expense {
     private int id;
@@ -12,14 +21,13 @@ public class Expense {
     private String description;
 
     /**
-     * Default constructor.
+     * @brief Default constructor.
      */
     public Expense() {
     }
 
     /**
-     * Constructor with all fields.
-     *
+     * @brief Constructor with all fields.
      * @param id the expense id
      * @param materialId the material id associated with this expense
      * @param projectId the project id associated with this expense
@@ -35,8 +43,7 @@ public class Expense {
     }
 
     /**
-     * Gets the expense id.
-     *
+     * @brief Gets the expense id.
      * @return the expense id
      */
     public int getId() {
@@ -44,8 +51,7 @@ public class Expense {
     }
 
     /**
-     * Sets the expense id.
-     *
+     * @brief Sets the expense id.
      * @param id the expense id
      */
     public void setId(int id) {
@@ -53,8 +59,7 @@ public class Expense {
     }
 
     /**
-     * Gets the material id.
-     *
+     * @brief Gets the material id.
      * @return the material id
      */
     public int getMaterialId() {
@@ -62,8 +67,7 @@ public class Expense {
     }
 
     /**
-     * Sets the material id.
-     *
+     * @brief Sets the material id.
      * @param materialId the material id
      */
     public void setMaterialId(int materialId) {
@@ -71,8 +75,7 @@ public class Expense {
     }
 
     /**
-     * Gets the project id.
-     *
+     * @brief Gets the project id.
      * @return the project id
      */
     public int getProjectId() {
@@ -80,8 +83,7 @@ public class Expense {
     }
 
     /**
-     * Sets the project id.
-     *
+     * @brief Sets the project id.
      * @param projectId the project id
      */
     public void setProjectId(int projectId) {
@@ -89,8 +91,7 @@ public class Expense {
     }
 
     /**
-     * Gets the expense amount.
-     *
+     * @brief Gets the expense amount.
      * @return the expense amount
      */
     public double getAmount() {
@@ -98,8 +99,7 @@ public class Expense {
     }
 
     /**
-     * Sets the expense amount.
-     *
+     * @brief Sets the expense amount.
      * @param amount the expense amount
      */
     public void setAmount(double amount) {
@@ -107,8 +107,7 @@ public class Expense {
     }
 
     /**
-     * Gets the expense description.
-     *
+     * @brief Gets the expense description.
      * @return the expense description
      */
     public String getDescription() {
@@ -116,8 +115,7 @@ public class Expense {
     }
 
     /**
-     * Sets the expense description.
-     *
+     * @brief Sets the expense description.
      * @param description the expense description
      */
     public void setDescription(String description) {
@@ -125,8 +123,7 @@ public class Expense {
     }
 
     /**
-     * Returns a string representation of the expense.
-     *
+     * @brief Returns a string representation of the expense.
      * @return string representation
      */
     @Override

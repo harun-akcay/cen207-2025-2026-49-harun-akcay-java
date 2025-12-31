@@ -1,3 +1,11 @@
+/**
+ * @file ExpenseRepository.java
+ * @brief This file contains the ExpenseRepository class for data access.
+ * @details This class provides persistence operations for expenses using CSV files.
+ *          Uses FileOperations for hash-based file integrity and atomic operations.
+ * @package com.hakcay.inventorymanagement.expense
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.expense;
 
 import java.io.File;
@@ -7,9 +15,10 @@ import java.util.List;
 import com.hakcay.inventorymanagement.algorithms.fileops.FileOperations;
 
 /**
- * Repository class for persisting Expense objects to a CSV file.
- * Handles reading from and writing to expenses.csv file.
- * Uses FileOperations for hash-based file integrity and atomic operations.
+ * @class ExpenseRepository
+ * @brief Repository class for persisting Expense objects to a CSV file.
+ * @details Handles reading from and writing to expenses.csv file.
+ *          Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class ExpenseRepository {
     private static final String DEFAULT_CSV_FILE = "expenses.csv";
@@ -18,15 +27,14 @@ public class ExpenseRepository {
     private final String csvFile;
 
     /**
-     * Default constructor that uses the default CSV file name.
+     * @brief Default constructor that uses the default CSV file name.
      */
     public ExpenseRepository() {
         this.csvFile = DEFAULT_CSV_FILE;
     }
 
     /**
-     * Constructor that accepts a custom file path.
-     *
+     * @brief Constructor that accepts a custom file path.
      * @param filePath the path to the CSV file
      */
     public ExpenseRepository(String filePath) {
@@ -34,10 +42,9 @@ public class ExpenseRepository {
     }
 
     /**
-     * Loads all expenses from the CSV file.
-     * Returns an empty list if the file doesn't exist or is empty.
+     * @brief Loads all expenses from the CSV file.
+     * @details Returns an empty list if the file doesn't exist or is empty.
      * Uses FileOperations for safe file reading.
-     *
      * @return list of all expenses
      */
     public List<Expense> loadAll() {
@@ -74,10 +81,9 @@ public class ExpenseRepository {
     }
 
     /**
-     * Saves all expenses to the CSV file.
-     * Overwrites the existing file with the new data.
+     * @brief Saves all expenses to the CSV file.
+     * @details Overwrites the existing file with the new data.
      * Uses FileOperations for atomic write and hash-based integrity checking.
-     *
      * @param expenses the list of expenses to save
      */
     public void saveAll(List<Expense> expenses) {
@@ -106,9 +112,8 @@ public class ExpenseRepository {
     }
 
     /**
-     * Parses a CSV line into an Expense object.
-     * Handles commas in fields by replacing placeholder with actual commas.
-     *
+     * @brief Parses a CSV line into an Expense object.
+     * @details Handles commas in fields by replacing placeholder with actual commas.
      * @param line the CSV line
      * @return Expense object or null if parsing fails
      */
@@ -132,9 +137,8 @@ public class ExpenseRepository {
     }
 
     /**
-     * Formats an Expense object into a CSV line.
-     * Handles commas in fields by replacing them with a placeholder.
-     *
+     * @brief Formats an Expense object into a CSV line.
+     * @details Handles commas in fields by replacing them with a placeholder.
      * @param expense the expense to format
      * @return CSV formatted string
      */
@@ -147,8 +151,7 @@ public class ExpenseRepository {
     }
 
     /**
-     * Escapes commas in a string by replacing them with a placeholder.
-     *
+     * @brief Escapes commas in a string by replacing them with a placeholder.
      * @param value the string to escape
      * @return escaped string
      */
@@ -160,8 +163,7 @@ public class ExpenseRepository {
     }
 
     /**
-     * Restores commas in a string by replacing placeholder with actual commas.
-     *
+     * @brief Restores commas in a string by replacing placeholder with actual commas.
      * @param value the string to restore
      * @return string with restored commas
      */

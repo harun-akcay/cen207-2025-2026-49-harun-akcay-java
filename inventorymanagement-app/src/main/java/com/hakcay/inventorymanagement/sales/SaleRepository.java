@@ -1,3 +1,11 @@
+/**
+ * @file SaleRepository.java
+ * @brief This file contains the SaleRepository class for data access.
+ * @details This class provides persistence operations for sales using CSV files.
+ *          Uses FileOperations for hash-based file integrity and atomic operations.
+ * @package com.hakcay.inventorymanagement.sales
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.sales;
 
 import java.io.File;
@@ -7,9 +15,10 @@ import java.util.List;
 import com.hakcay.inventorymanagement.algorithms.fileops.FileOperations;
 
 /**
- * Repository class for persisting Sale objects to a CSV file.
- * Handles reading from and writing to sales.csv file.
- * Uses FileOperations for hash-based file integrity and atomic operations.
+ * @class SaleRepository
+ * @brief Repository class for persisting Sale objects to a CSV file.
+ * @details Handles reading from and writing to sales.csv file.
+ *          Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class SaleRepository {
     private static final String DEFAULT_CSV_FILE = "sales.csv";
@@ -18,15 +27,14 @@ public class SaleRepository {
     private final String csvFile;
 
     /**
-     * Default constructor that uses the default CSV file name.
+     * @brief Default constructor that uses the default CSV file name.
      */
     public SaleRepository() {
         this.csvFile = DEFAULT_CSV_FILE;
     }
 
     /**
-     * Constructor that accepts a custom file path.
-     *
+     * @brief Constructor that accepts a custom file path.
      * @param filePath the path to the CSV file
      */
     public SaleRepository(String filePath) {
@@ -34,10 +42,9 @@ public class SaleRepository {
     }
 
     /**
-     * Loads all sales from the CSV file.
-     * Returns an empty list if the file doesn't exist or is empty.
+     * @brief Loads all sales from the CSV file.
+     * @details Returns an empty list if the file doesn't exist or is empty.
      * Uses FileOperations for safe file reading.
-     *
      * @return list of all sales
      */
     public List<Sale> loadAll() {
@@ -74,10 +81,9 @@ public class SaleRepository {
     }
 
     /**
-     * Saves all sales to the CSV file.
-     * Overwrites the existing file with the new data.
+     * @brief Saves all sales to the CSV file.
+     * @details Overwrites the existing file with the new data.
      * Uses FileOperations for atomic write and hash-based integrity checking.
-     *
      * @param sales the list of sales to save
      */
     public void saveAll(List<Sale> sales) {
@@ -106,9 +112,8 @@ public class SaleRepository {
     }
 
     /**
-     * Parses a CSV line into a Sale object.
-     * Handles commas in fields by replacing placeholder with actual commas.
-     *
+     * @brief Parses a CSV line into a Sale object.
+     * @details Handles commas in fields by replacing placeholder with actual commas.
      * @param line the CSV line
      * @return Sale object or null if parsing fails
      */
@@ -133,9 +138,8 @@ public class SaleRepository {
     }
 
     /**
-     * Formats a Sale object into a CSV line.
-     * Handles commas in fields by replacing them with a placeholder.
-     *
+     * @brief Formats a Sale object into a CSV line.
+     * @details Handles commas in fields by replacing them with a placeholder.
      * @param sale the sale to format
      * @return CSV formatted string
      */
@@ -149,8 +153,7 @@ public class SaleRepository {
     }
 
     /**
-     * Escapes commas in a string by replacing them with a placeholder.
-     *
+     * @brief Escapes commas in a string by replacing them with a placeholder.
      * @param value the string to escape
      * @return escaped string
      */
@@ -162,8 +165,7 @@ public class SaleRepository {
     }
 
     /**
-     * Restores commas in a string by replacing placeholder with actual commas.
-     *
+     * @brief Restores commas in a string by replacing placeholder with actual commas.
      * @param value the string to restore
      * @return string with restored commas
      */
