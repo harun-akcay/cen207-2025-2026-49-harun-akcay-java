@@ -78,16 +78,15 @@ if exist "target\site\doxygen\xml" (
     mkdir "target\site\coverxygen"
     
     echo Running coverxygen...
-    set "currentDir=%CD%"
     cd ..
-    call py -3.13 -m coverxygen --xml-dir ./inventorymanagement-app/target/site/doxygen/xml --src-dir ./inventorymanagement-app/src/main/java --format lcov --output ./inventorymanagement-app/target/site/coverxygen/lcov.info --prefix %currentDir%/inventorymanagement-app/src/main/java/
+    call py -3.13 -m coverxygen --xml-dir ./inventorymanagement-app/target/site/doxygen/xml --src-dir ./inventorymanagement-app/src/main/java --format lcov --output ./inventorymanagement-app/target/site/coverxygen/lcov.info --prefix inventorymanagement-app/src/main/java/
     if %ERRORLEVEL% NEQ 0 (
         echo WARNING: Coverxygen generation failed, but continuing...
     ) else (
         echo Coverxygen LCOV file generated successfully.
         
         echo Fixing LCOV file paths...
-        powershell -Command "$content = Get-Content 'inventorymanagement-app\target\site\coverxygen\lcov.info' -Raw; $lines = $content -split \"`n\"; $filtered = @(); $skip = $false; foreach ($line in $lines) { if ($line -match '^SF:.*(README\.md|\[generated\])') { $skip = $true } elseif ($line -match '^end_of_record') { if (-not $skip) { $filtered += $line } $skip = $false } elseif (-not $skip) { $filtered += $line } }; $fixed = ($filtered -join \"`n\") -replace 'inventorymanagement-app\\src\\main\\java\\inventorymanagement-app\\src\\main\\java', 'inventorymanagement-app\src\main\java'; Set-Content 'inventorymanagement-app\target\site\coverxygen\lcov.info' -Value $fixed"
+        powershell -Command "$content = Get-Content 'inventorymanagement-app\target\site\coverxygen\lcov.info' -Raw; $lines = $content -split \"`n\"; $filtered = @(); $skip = $false; foreach ($line in $lines) { if ($line -match '^SF:.*(README\.md|\[generated\])') { $skip = $true } elseif ($line -match '^end_of_record') { if (-not $skip) { $filtered += $line } $skip = $false } elseif (-not $skip) { $filtered += $line } }; $fixed = ($filtered -join \"`n\") -replace 'inventorymanagement-app\\src\\main\\java\\inventorymanagement-app\\src\\main\\java', 'inventorymanagement-app\src\main\java' -replace 'C:\\[^:]+\\inventorymanagement-app\\src\\main\\java\\inventorymanagement-app\\src\\main\\java', 'inventorymanagement-app\src\main\java' -replace '^SF:C:\\[^:]+\\inventorymanagement-app\\src\\main\\java', 'SF:inventorymanagement-app\src\main\java'; Set-Content 'inventorymanagement-app\target\site\coverxygen\lcov.info' -Value $fixed"
         
         echo Running lcov genhtml...
         if exist "C:\ProgramData\chocolatey\lib\lcov\tools\bin\genhtml" (
