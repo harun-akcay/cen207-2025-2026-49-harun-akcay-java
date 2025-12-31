@@ -635,5 +635,129 @@ public class FileOperationsTest {
         // Clean up
         newFile.delete();
     }
+    
+    @Test
+    public void testAtomicWrite_RestoreExceptionHandling() throws IOException {
+        // Test restoreException catch block in atomicWrite
+        // Create a file and backup
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        FileOperations.createBackup(TEST_FILE);
+        
+        // Make the original file read-only to cause IOException during atomic write
+        File file = new File(TEST_FILE);
+        file.setReadOnly();
+        
+        // Make backup file read-only to cause IOException during restore
+        File backupFile = new File(TEST_FILE + ".backup");
+        backupFile.setReadOnly();
+        
+        try {
+            boolean success = FileOperations.atomicWrite(TEST_FILE, TEST_CONTENT_2);
+            assertFalse("Atomic write should fail", success);
+        } finally {
+            // Restore write permissions
+            file.setWritable(true);
+            backupFile.setWritable(true);
+        }
+    }
+    
+    @Test
+    public void testCreateBackup_IOExceptionHandling() throws IOException {
+        // Test IOException in createBackup
+        // Create a file
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        
+        // Delete the file to cause IOException during backup creation
+        File file = new File(TEST_FILE);
+        file.delete();
+        
+        // Try to create backup of non-existent file
+        boolean success = FileOperations.createBackup(TEST_FILE);
+        // Should fail gracefully
+        assertFalse("Backup creation should fail for non-existent file", success);
+    }
+    
+    @Test
+    public void testRestoreFromBackup_IOExceptionHandling() throws IOException {
+        // Test IOException in restoreFromBackup
+        // Create a file and backup
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        FileOperations.createBackup(TEST_FILE);
+        
+        // Make the original file read-only to cause IOException during restore
+        File file = new File(TEST_FILE);
+        file.setReadOnly();
+        
+        try {
+            boolean success = FileOperations.restoreFromBackup(TEST_FILE);
+            // Should fail gracefully
+            assertFalse("Restore should fail for read-only file", success);
+        } finally {
+            // Restore write permissions
+            file.setWritable(true);
+        }
+    }
+    
+    @Test
+    public void testAtomicWrite_TempFileCleanupOnFailure() throws IOException {
+        // Test tempFile.exists() branch in IOException catch block
+        // Create a file
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        
+        // Create a directory with the same name as temp file to cause IOException
+        File tempFile = new File(TEST_FILE + ".tmp");
+        tempFile.mkdirs();
+        
+        try {
+            // Try to write - should fail because temp file path is a directory
+            boolean success = FileOperations.atomicWrite(TEST_FILE, TEST_CONTENT_2);
+            assertFalse("Atomic write should fail when temp file path is directory", success);
+        } finally {
+            // Clean up
+            tempFile.delete();
+        }
+    }
+    
+    @Test
+    public void testAtomicWrite_BackupFileNotExists() throws IOException {
+        // Test backupFile.exists() == false branch in IOException catch
+        // Write to new file (no backup exists) and cause failure
+        File newFile = new File(TEST_DIR + File.separator + "new_file_test.txt");
+        newFile.delete(); // Ensure it doesn't exist
+        
+        // Create a directory with the same name to cause IOException
+        newFile.mkdirs();
+        
+        try {
+            boolean success = FileOperations.atomicWrite(newFile.getAbsolutePath(), TEST_CONTENT);
+            assertFalse("Atomic write should fail for directory", success);
+        } finally {
+            // Clean up
+            newFile.delete();
+        }
+    }
+    
+    @Test
+    public void testAtomicWrite_FileNotExistsInRestore() throws IOException {
+        // Test file.exists() == false branch in IOException catch restore block
+        // Create backup but delete original file before restore attempt
+        Files.write(new File(TEST_FILE).toPath(), TEST_CONTENT.getBytes());
+        FileOperations.createBackup(TEST_FILE);
+        
+        // Delete original file
+        File file = new File(TEST_FILE);
+        file.delete();
+        
+        // Create a directory with the same name to cause IOException during write
+        file.mkdirs();
+        
+        try {
+            boolean success = FileOperations.atomicWrite(TEST_FILE, TEST_CONTENT_2);
+            assertFalse("Atomic write should fail", success);
+        } finally {
+            // Clean up
+            file.delete();
+        }
+    }
 }
 

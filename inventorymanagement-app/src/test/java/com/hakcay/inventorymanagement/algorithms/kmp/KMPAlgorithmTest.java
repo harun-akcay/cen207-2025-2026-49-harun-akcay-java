@@ -298,5 +298,34 @@ public class KMPAlgorithmTest {
         assertEquals(1, occurrences.size());
         assertEquals(Integer.valueOf(0), occurrences.get(0));
     }
+    
+    @Test
+    public void testComputeLPSWithRepeatedPattern() {
+        // Test LPS computation with pattern that has repeated prefixes
+        String text = "ABABABAB";
+        String pattern = "ABAB";
+        List<Integer> occurrences = KMPAlgorithm.search(text, pattern);
+        // Should find pattern at positions 0, 2, 4
+        assertEquals(3, occurrences.size());
+    }
+    
+    @Test
+    public void testComputeLPSWithNoPrefixMatch() {
+        // Test LPS computation when pattern has no matching prefix/suffix
+        String text = "ABCDEFG";
+        String pattern = "XYZ";
+        List<Integer> occurrences = KMPAlgorithm.search(text, pattern);
+        assertTrue(occurrences.isEmpty());
+    }
+    
+    @Test
+    public void testComputeLPSWithSingleCharacterPattern() {
+        // Test LPS computation for single character pattern
+        String text = "ABCDEFG";
+        String pattern = "C";
+        List<Integer> occurrences = KMPAlgorithm.search(text, pattern);
+        assertEquals(1, occurrences.size());
+        assertEquals(Integer.valueOf(2), occurrences.get(0));
+    }
 }
 

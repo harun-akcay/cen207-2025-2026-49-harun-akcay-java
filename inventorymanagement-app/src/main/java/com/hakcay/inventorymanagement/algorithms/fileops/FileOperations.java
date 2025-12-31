@@ -1,3 +1,10 @@
+/**
+ * @file FileOperations.java
+ * @brief File Operations utility class for hash-based file integrity checking, atomic file operations, and safe file writes.
+ * @details Provides persistent storage operations with data integrity guarantees.
+ * @package com.hakcay.inventorymanagement.algorithms.fileops
+ * @author Harun Akcay
+ */
 package com.hakcay.inventorymanagement.algorithms.fileops;
 
 import java.io.BufferedReader;
@@ -13,9 +20,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * File Operations utility class for hash-based file integrity checking,
- * atomic file operations, and safe file writes.
- * Provides persistent storage operations with data integrity guarantees.
+ * @class FileOperations
+ * @brief File Operations utility class for hash-based file integrity checking, atomic file operations, and safe file writes.
+ * @details Provides persistent storage operations with data integrity guarantees.
  */
 public class FileOperations {
     

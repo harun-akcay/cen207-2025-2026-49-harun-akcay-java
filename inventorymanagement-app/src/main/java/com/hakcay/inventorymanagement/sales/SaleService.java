@@ -17,7 +17,9 @@ import java.util.List;
  * @details Provides business logic for adding, removing, and retrieving sales.
  */
 public class SaleService {
+    /** @brief Repository for persisting sales data */
     private SaleRepository repository;
+    /** @brief In-memory list of sales */
     private List<Sale> sales;
 
     /**

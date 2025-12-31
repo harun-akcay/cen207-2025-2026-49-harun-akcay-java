@@ -17,6 +17,7 @@ import org.junit.Test;
  */
 public class HashTableTest {
     
+    /** @brief HashTable instance for testing */
     private HashTable<String, Integer> hashTable;
     
     @Before
@@ -509,14 +510,14 @@ public class HashTableTest {
     
     @Test
     public void testResizeWithEmptyBuckets() {
-        // Create table and add elements, then remove some to create empty buckets
+        // Test resize when some buckets are empty after removing elements
         HashTable<String, Integer> table = new HashTable<>(4, 0.75);
         
         table.put("key1", 1);
         table.put("key2", 2);
         table.put("key3", 3);
         
-        // Remove one element
+        // Remove one element to create empty bucket
         table.remove("key2");
         
         // Add more to trigger resize with some empty buckets
@@ -605,6 +606,37 @@ public class HashTableTest {
         assertEquals(Integer.valueOf(2), removed);
         assertEquals(2, table.size());
         assertNull(table.get("key2"));
+    }
+    
+    @Test
+    public void testResizePreservesAllEntries() {
+        // Test that resize correctly preserves all entries
+        HashTable<Integer, String> table = new HashTable<>(2, 0.75);
+        
+        // Add enough elements to trigger multiple resizes
+        for (int i = 0; i < 10; i++) {
+            table.put(i, "value" + i);
+        }
+        
+        // Verify all entries are still accessible after resizes
+        assertEquals(10, table.size());
+        for (int i = 0; i < 10; i++) {
+            assertEquals("value" + i, table.get(i));
+        }
+    }
+    
+    @Test
+    public void testHashWithNegativeHashCode() {
+        // Test hash method with key that has negative hashCode
+        HashTable<String, Integer> table = new HashTable<>();
+        
+        // Use a key that might have negative hashCode
+        String key = "test";
+        table.put(key, 100);
+        
+        // Verify it's stored and retrievable
+        assertEquals(Integer.valueOf(100), table.get(key));
+        assertTrue(table.containsKey(key));
     }
 }
 

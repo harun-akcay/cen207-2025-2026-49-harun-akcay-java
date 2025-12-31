@@ -14,9 +14,13 @@ package com.hakcay.inventorymanagement.project;
  * @details Contains information about project id, name, goal, and status.
  */
 public class Project {
+    /** @brief Unique identifier for the project */
     private int id;
+    /** @brief Name of the project */
     private String name;
+    /** @brief Goal or objective of the project */
     private String goal;
+    /** @brief Current status of the project (e.g., PLANNED, IN_PROGRESS, DONE) */
     private String status;
 
     /**

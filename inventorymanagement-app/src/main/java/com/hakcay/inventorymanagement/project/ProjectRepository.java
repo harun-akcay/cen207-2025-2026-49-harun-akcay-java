@@ -27,9 +27,13 @@ import com.hakcay.inventorymanagement.algorithms.hashtable.HashTable;
  *          Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class ProjectRepository {
+    /** @brief Default CSV file name for projects */
     private static final String DEFAULT_CSV_FILE = "projects.csv";
+    /** @brief CSV field separator */
     private static final String CSV_SEPARATOR = ",";
+    /** @brief Placeholder for commas in CSV fields */
     private static final String COMMA_PLACEHOLDER = "|COMMA|";
+    /** @brief Path to the CSV file */
     private final String csvFile;
     
     /** @brief HashTable for O(1) lookup by ID */

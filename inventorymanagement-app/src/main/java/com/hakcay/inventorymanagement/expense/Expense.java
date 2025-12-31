@@ -14,10 +14,15 @@ package com.hakcay.inventorymanagement.expense;
  * @details Contains information about expense id, material id, project id, amount, and description.
  */
 public class Expense {
+    /** @brief Unique identifier for the expense */
     private int id;
+    /** @brief Material ID associated with this expense */
     private int materialId;
+    /** @brief Project ID associated with this expense */
     private int projectId;
+    /** @brief Expense amount */
     private double amount;
+    /** @brief Description of the expense */
     private String description;
 
     /**

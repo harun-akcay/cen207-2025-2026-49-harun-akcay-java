@@ -716,5 +716,23 @@ public class MaterialServiceTest {
         int restored = service.restoreFromBackup(backup.getEncoded(), backup.getEncodingTable());
         assertEquals(0, restored);
     }
+    
+    @Test
+    public void testRemoveMaterialByIdNonExistent() {
+        // Test removeMaterialById when material doesn't exist (existing == null)
+        boolean removed = service.removeMaterialById(999);
+        assertFalse("Should return false for non-existent material", removed);
+    }
+    
+    @Test
+    public void testRemoveMaterialByIdExisting() {
+        // Test removeMaterialById when material exists
+        Material material = new Material(1, "Steel", "Metal", 100, 10.50);
+        service.addMaterial(material);
+        
+        boolean removed = service.removeMaterialById(1);
+        assertTrue("Should return true for existing material", removed);
+        assertNull(service.getMaterialById(1));
+    }
 }
 

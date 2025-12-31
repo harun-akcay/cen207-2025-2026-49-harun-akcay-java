@@ -21,9 +21,13 @@ import com.hakcay.inventorymanagement.algorithms.fileops.FileOperations;
  *          Uses FileOperations for hash-based file integrity and atomic operations.
  */
 public class ExpenseRepository {
+    /** @brief Default CSV file name for expenses */
     private static final String DEFAULT_CSV_FILE = "expenses.csv";
+    /** @brief CSV field separator */
     private static final String CSV_SEPARATOR = ",";
+    /** @brief Placeholder for commas in CSV fields */
     private static final String COMMA_PLACEHOLDER = "|COMMA|";
+    /** @brief Path to the CSV file */
     private final String csvFile;
 
     /**

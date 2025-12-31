@@ -167,5 +167,30 @@ public class HuffmanCodingTest {
         String decoded = HuffmanCoding.decode(result.getEncoded(), result.getEncodingTable());
         assertEquals(data, decoded);
     }
+    
+    @Test
+    public void testEncodeSingleCharacter() {
+        // Test special case where code is empty (only one character)
+        String data = "A";
+        HuffmanCoding.EncodedResult result = HuffmanCoding.encode(data);
+        assertNotNull(result);
+        assertNotNull(result.getEncodingTable());
+        assertTrue(result.getEncodingTable().containsKey('A'));
+        // Single character should get code "0"
+        assertEquals("0", result.getEncodingTable().get('A'));
+    }
+    
+    @Test
+    public void testDecodeWithPartialCode() {
+        // Test decode when encoded string doesn't match any code exactly
+        Map<Character, String> table = new java.util.HashMap<>();
+        table.put('A', "0");
+        table.put('B', "10");
+        table.put('C', "11");
+        
+        // Decode "101" - should match "10" (B) and leave "1" unmatched
+        String decoded = HuffmanCoding.decode("101", table);
+        assertEquals("B", decoded);
+    }
 }
 

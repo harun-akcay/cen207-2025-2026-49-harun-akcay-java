@@ -310,20 +310,38 @@ public class BPlusTree<K extends Comparable<K>, V> {
     
     /**
      * @brief Entry class for key-value pairs.
+     * @details Represents a key-value pair for ordered traversal.
+     * @param <K> The type of keys
+     * @param <V> The type of values
      */
     public static class Entry<K, V> {
+        /** @brief The key */
         private K key;
+        /** @brief The value */
         private V value;
         
+        /**
+         * @brief Constructor for Entry.
+         * @param key The key
+         * @param value The value
+         */
         public Entry(K key, V value) {
             this.key = key;
             this.value = value;
         }
         
+        /**
+         * @brief Gets the key.
+         * @return The key
+         */
         public K getKey() {
             return key;
         }
         
+        /**
+         * @brief Gets the value.
+         * @return The value
+         */
         public V getValue() {
             return value;
         }

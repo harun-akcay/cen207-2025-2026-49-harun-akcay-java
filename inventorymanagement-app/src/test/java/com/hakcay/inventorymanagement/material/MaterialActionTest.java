@@ -96,5 +96,39 @@ public class MaterialActionTest {
         assertEquals(original.getId(), before.getId());
         assertEquals(original.getName(), before.getName());
     }
+    
+    @Test
+    public void testGetMaterialBeforeReturnsCopy() {
+        Material material = new Material(1, "Steel", "Metal", 100, 10.50);
+        MaterialAction action = new MaterialAction(
+            MaterialAction.ActionType.UPDATE,
+            material,
+            null
+        );
+        
+        Material before1 = action.getMaterialBefore();
+        Material before2 = action.getMaterialBefore();
+        
+        // Each call should return a new copy
+        assertNotSame(before1, before2);
+        assertEquals(before1.getId(), before2.getId());
+    }
+    
+    @Test
+    public void testGetMaterialAfterReturnsCopy() {
+        Material material = new Material(1, "Steel", "Metal", 100, 10.50);
+        MaterialAction action = new MaterialAction(
+            MaterialAction.ActionType.ADD,
+            null,
+            material
+        );
+        
+        Material after1 = action.getMaterialAfter();
+        Material after2 = action.getMaterialAfter();
+        
+        // Each call should return a new copy
+        assertNotSame(after1, after2);
+        assertEquals(after1.getId(), after2.getId());
+    }
 }
 

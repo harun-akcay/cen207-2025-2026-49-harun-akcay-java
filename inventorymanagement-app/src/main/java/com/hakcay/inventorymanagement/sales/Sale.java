@@ -14,11 +14,17 @@ package com.hakcay.inventorymanagement.sales;
  * @details Contains information about sale id, material id, quantity, price, date, and customer name.
  */
 public class Sale {
+    /** @brief Unique identifier for the sale */
     private int id;
+    /** @brief Material ID associated with this sale */
     private int materialId;
+    /** @brief Quantity of items sold */
     private int quantity;
+    /** @brief Price per unit */
     private double price;
+    /** @brief Date of the sale */
     private String date;
+    /** @brief Name of the customer */
     private String customerName;
 
     /**

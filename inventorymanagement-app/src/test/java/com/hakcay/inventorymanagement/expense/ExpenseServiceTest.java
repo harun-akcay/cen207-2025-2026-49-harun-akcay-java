@@ -208,5 +208,32 @@ public class ExpenseServiceTest {
         double total = service.getTotalExpenseForProject(100);
         assertEquals(0.0, total, 0.001);
     }
+
+    /**
+     * Test that getExpenseById works correctly.
+     */
+    @Test
+    public void testGetExpenseByIdWorks() {
+        Expense expense1 = new Expense(1, 10, 100, 250.50, "Steel purchase");
+        Expense expense2 = new Expense(2, 20, 100, 150.00, "Wood purchase");
+        Expense expense3 = new Expense(3, 30, 200, 75.25, "Plastic purchase");
+
+        service.addExpense(expense1);
+        service.addExpense(expense2);
+        service.addExpense(expense3);
+
+        // Test getting existing expense
+        Expense found = service.getExpenseById(2);
+        assertNotNull(found);
+        assertEquals(2, found.getId());
+        assertEquals(20, found.getMaterialId());
+        assertEquals(100, found.getProjectId());
+        assertEquals(150.00, found.getAmount(), 0.001);
+        assertEquals("Wood purchase", found.getDescription());
+
+        // Test getting non-existent expense
+        Expense notFound = service.getExpenseById(999);
+        assertNull(notFound);
+    }
 }
 

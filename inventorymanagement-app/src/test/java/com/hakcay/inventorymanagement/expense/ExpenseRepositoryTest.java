@@ -237,5 +237,117 @@ public class ExpenseRepositoryTest {
         assertEquals(1, loaded.size());
         // The commas should be handled correctly
     }
+    
+    /**
+     * @brief Test saveAll with empty list (no trailing newline).
+     */
+    @Test
+    public void testSaveAllWithEmptyList() {
+        List<Expense> expenses = new ArrayList<>();
+        repository.saveAll(expenses);
+        
+        List<Expense> loaded = repository.loadAll();
+        assertEquals(0, loaded.size());
+    }
+    
+    /**
+     * @brief Test saveAll with single expense (no trailing newline removal needed).
+     */
+    @Test
+    public void testSaveAllWithSingleExpense() {
+        List<Expense> expenses = new ArrayList<>();
+        expenses.add(new Expense(1, 10, 100, 250.50, "Test"));
+        repository.saveAll(expenses);
+        
+        List<Expense> loaded = repository.loadAll();
+        assertEquals(1, loaded.size());
+        assertEquals(1, loaded.get(0).getId());
+    }
+    
+    /**
+     * @brief Test saveAll with trailing newline removal.
+     */
+    @Test
+    public void testSaveAllWithTrailingNewline() {
+        List<Expense> expenses = new ArrayList<>();
+        expenses.add(new Expense(1, 10, 100, 250.50, "Test1"));
+        expenses.add(new Expense(2, 20, 200, 150.00, "Test2"));
+        repository.saveAll(expenses);
+        
+        List<Expense> loaded = repository.loadAll();
+        assertEquals(2, loaded.size());
+    }
+    
+    /**
+     * @brief Test loadAll with content that is null.
+     */
+    @Test
+    public void testLoadAllWithNullContent() throws IOException {
+        // Create empty file
+        java.io.FileWriter writer = new java.io.FileWriter(tempFile);
+        writer.write("");
+        writer.close();
+        
+        List<Expense> expenses = repository.loadAll();
+        assertEquals(0, expenses.size());
+    }
+    
+    /**
+     * @brief Test parseExpense with invalid materialId.
+     */
+    @Test
+    public void testLoadAllWithInvalidMaterialId() throws IOException {
+        java.io.FileWriter writer = new java.io.FileWriter(tempFile);
+        writer.write("1,invalid,100,250.50,Test\n");
+        writer.write("2,20,100,150.00,Valid\n");
+        writer.close();
+        
+        List<Expense> expenses = repository.loadAll();
+        assertEquals(1, expenses.size());
+        assertEquals(2, expenses.get(0).getId());
+    }
+    
+    /**
+     * @brief Test parseExpense with invalid projectId.
+     */
+    @Test
+    public void testLoadAllWithInvalidProjectId() throws IOException {
+        java.io.FileWriter writer = new java.io.FileWriter(tempFile);
+        writer.write("1,10,invalid,250.50,Test\n");
+        writer.write("2,20,100,150.00,Valid\n");
+        writer.close();
+        
+        List<Expense> expenses = repository.loadAll();
+        assertEquals(1, expenses.size());
+        assertEquals(2, expenses.get(0).getId());
+    }
+    
+    /**
+     * @brief Test restoreCommas with null value.
+     */
+    @Test
+    public void testLoadAllWithNullDescriptionField() throws IOException {
+        java.io.FileWriter writer = new java.io.FileWriter(tempFile);
+        writer.write("1,10,100,250.50,\n"); // Empty description
+        writer.close();
+        
+        List<Expense> expenses = repository.loadAll();
+        assertEquals(1, expenses.size());
+        assertNotNull(expenses.get(0).getDescription());
+    }
+    
+    /**
+     * @brief Test saveAll with content that doesn't end with newline.
+     */
+    @Test
+    public void testSaveAllWithoutTrailingNewline() {
+        List<Expense> expenses = new ArrayList<>();
+        expenses.add(new Expense(1, 10, 100, 250.50, "Test"));
+        repository.saveAll(expenses);
+        
+        // Verify it was saved correctly
+        List<Expense> loaded = repository.loadAll();
+        assertEquals(1, loaded.size());
+    }
 }
 
