@@ -12,9 +12,9 @@
 
 	<!-- More Project Information -->
 	<name>inventorymanagement-app</name>
-	<url>https://github.com/ucoruh/eclipse-java-maven-template</url>
+	<url>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</url>
 	<scm>
-		<url>https://github.com/ucoruh/eclipse-java-maven-template</url>
+		<url>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</url>
 	</scm>
 	<inceptionYear>2025</inceptionYear>
 	<developers>
@@ -87,7 +87,7 @@
 			</roles>
 		</contributor>
 	</contributors>
-	<description>Maven Example Template Project</description>
+	<description>Inventory Management Application - A comprehensive Java-based inventory management system with advanced data structures (B+ Trees, Hash Tables) and algorithms (Huffman Coding, KMP Algorithm, Graph algorithms) for managing materials, projects, and expenses with high test coverage (93.27%) and documentation coverage (97.8%).</description>
 	<organization>
 		<name>Recep Tayyip Erdogan University</name>
 		<url>www.erdogan.edu.tr</url>
@@ -95,38 +95,38 @@
 	<!-- Environment Settings -->
 	<issueManagement>
 		<system>Github</system>
-		<url>https://github.com/ucoruh/eclipse-java-maven-template</url>
+		<url>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Github</system>
 		<notifiers>
 			<notifier>
-				<address>ugur.coruh@erdogan.edu.tr</address>
+				<address>harun_akcay23@erdogan.edu.tr</address>
 				<sendOnSuccess>true</sendOnSuccess>
 				<sendOnError>true</sendOnError>
 				<sendOnFailure>true</sendOnFailure>
 				<sendOnWarning>true</sendOnWarning>
 			</notifier>
 		</notifiers>
-		<url>https://github.com/ucoruh/eclipse-java-maven-template</url>
+		<url>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</url>
 	</ciManagement>
 	<repositories>
 		<repository>
-			<id>eclipse-java-maven-template</id>
-			<name>eclipse-java-maven-template</name>
-			<url>https://github.com/ucoruh/eclipse-java-maven-template</url>
+			<id>cen207-2025-2026-49-harun-akcay-java</id>
+			<name>cen207-2025-2026-49-harun-akcay-java</name>
+			<url>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</url>
 		</repository>
 	</repositories>
 	<distributionManagement>
 		<site>
-			<name>https://github.com/ucoruh/eclipse-java-maven-template</name>
-			<id>eclipse-java-maven-template</id>
+			<name>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</name>
+			<id>cen207-2025-2026-49-harun-akcay-java</id>
 		</site>
-		<downloadUrl>https://github.com/ucoruh/eclipse-java-maven-template</downloadUrl>
+		<downloadUrl>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</downloadUrl>
 		<repository>
-			<id>eclipse-java-maven-template</id>
-			<name>eclipse-java-maven-template</name>
-			<url>https://github.com/ucoruh/eclipse-java-maven-template</url>
+			<id>cen207-2025-2026-49-harun-akcay-java</id>
+			<name>cen207-2025-2026-49-harun-akcay-java</name>
+			<url>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</url>
 		</repository>
 	</distributionManagement>
 	<properties>

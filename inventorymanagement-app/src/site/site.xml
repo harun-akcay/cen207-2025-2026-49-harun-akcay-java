@@ -22,7 +22,7 @@
 	<bannerLeft>
 		<name>Inventorymanagement Application</name>
 		<src>images/logo.png</src>
-		<href>https://github.com/ucoruh/eclipse-java-maven-template</href>
+		<href>https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java</href>
 	</bannerLeft>
 
 	<bannerRight>
@@ -45,7 +45,7 @@
 				<item name="Project Info" href="project-info.html" />
 				<item name="Project Summary" href="summary.html" />
 				<item name="Project Team" href="team.html" />
-				<item name="GitHub Repository" href="https://github.com/ucoruh/eclipse-java-maven-template" />
+				<item name="GitHub Repository" href="https://github.com/harun-akcay/cen207-2025-2026-49-harun-akcay-java" />
 		</menu>
 
 		<menu name="Development">
